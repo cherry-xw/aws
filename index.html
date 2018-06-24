@@ -3,43 +3,241 @@
 
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title></title>
-		<link rel="stylesheet" type="text/css" href="css/reset.css" />
-		<link rel="stylesheet" type="text/css" href="css/border.css" />
-		<link href="css/mui.min.css" rel="stylesheet" />
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<style type="text/css">
+			#list {
+				/*避免导航边框和列表背景边框重叠，看起来像两条边框似得；*/
+				margin-top: -1px;
+			}
+		</style>
 	</head>
 
 	<body>
-		<!-- 侧滑导航根容器 -->
-		<div class="mui-off-canvas-wrap mui-draggable">
-			<!-- 菜单容器 -->
-			<aside class="mui-off-canvas-left">
-				<div class="mui-scroll-wrapper">
-					<div class="mui-scroll">
-						<!-- 菜单具体展示内容 -->
-						...
-					</div>
-				</div>
-			</aside>
-			<!-- 主页面容器 -->
-			<div class="mui-inner-wrap">
-				<!-- 主页面标题 -->
-				<header class="mui-bar mui-bar-nav">
-					<a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
-					<h1 class="mui-title">基础产品</h1>
-				</header>
-				<div class="mui-content mui-scroll-wrapper">
-					<div class="mui-scroll">
-						<!-- 主界面具体展示内容 -->
-						...
-					</div>
-				</div>
-			</div>
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-icon mui-icon-bars mui-pull-left color-white mui-bg-primary" id="sideMenu"></span>
+		    <h1 class="mui-title mui-bg-primary color-white">基础产品</h1>
+			<a class="mui-icon mui-icon-more mui-pull-right color-white mui-bg-primary"></a>
+			<a class="mui-icon mui-icon-search away-right mui-pull-right color-white mui-bg-primary"></a>
+		    
+		</header>
+		<div class="mui-content">
+			
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript" charset="utf-8">
-			mui.init();
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				subpages: [{
+					url: 'pages/basic/main.html',
+					id: 'main_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				}]
+			});
+			var aniShow = "pop-in";
+			var menu = null,
+				showMenu = false;
+			var isInTransition = false;
+			var _self;
+			//只有ios支持的功能需要在Android平台隐藏；
+			if(mui.os.android) {
+				//Android平台暂时使用slide-in-right动画
+				if(parseFloat(mui.os.version) < 4.4) {
+					aniShow = "slide-in-right";
+				}
+			}
+			//初始化，并预加载webview模式的选项卡			
+			function preload() {
+
+				var menu_style = {
+					left: "-70%",
+					width: '70%',
+					popGesture: "none",
+					render:"always"
+				};
+
+				if(mui.os.ios) {
+					menu_style.zindex = -1;
+				}
+
+				//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+				menu = mui.openWindow({
+					id: 'index-menu',
+					url: 'index-menu.html',
+					styles: menu_style,
+					show: {
+						aniShow: 'none'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			mui.plusReady(function() {
+				//仅支持竖屏显示
+				plus.screen.lockOrientation("portrait-primary");
+				//延迟的原因：优先打开启动导航页面，避免资源争夺
+				setTimeout(function() {
+					//预加载
+					preload();
+				}, 200);
+				//绘制顶部图标
+				_self = plus.webview.currentWebview();
+//				var titleView = _self.getNavigationbar();
+//
+//				if(!titleView) {
+//					titleView = plus.webview.getLaunchWebview().getNavigationbar();
+//				}
+//
+//				titleView.drawRect("#cccccc", {
+//					top: "43px",
+//					height:"1px",
+//					left: "0px"
+//				}); //绘制底部边线
+//
+//				//开启回弹
+				_self.setStyle({
+					bounce: "vertical",
+					bounceBackground:"#efeff4",
+					popGesture:'none'//首页有侧滑菜单，因此屏蔽首页的侧滑关闭功能
+				});
+//
+//				//绘制左上角menu图标
+//				var bitmap_menu = new plus.nativeObj.Bitmap("menu");
+//				bitmap_menu.loadBase64Data("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAKlBMVEUAAAAAev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8AAABINtoqAAAADHRSTlMA/fPQ0M/e3tzs7OjgY5g4AAAAAWJLR0QAiAUdSAAAAAd0SU1FB+EBFwEbOGGUPSIAAAA2SURBVDjLY2AY9oDxDBZwCJ8EswsW4DrQ/hicgPTQZSvHAioG2h+DE5AeupyrsIDVA+0PqgEAu36BkQX5nBQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDEtMjNUMDE6Mjc6NTYrMDg6MDC8FK1uAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTAxLTIzVDAxOjI3OjU2KzA4OjAwzUkV0gAAAABJRU5ErkJggg==");
+//				titleView.drawBitmap(bitmap_menu, {
+//					color: '#fff'
+//				}, {
+//					top: "10px",
+//					left: "10px",
+//					width: "24px",
+//					height: "24px"
+//				});
+//
+//				var about_left = window.innerWidth - 34;
+//				var bitmap = new plus.nativeObj.Bitmap("about");
+//				bitmap.loadBase64Data("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAHdElNRQfhARcBEina5qaZAAAB10lEQVRYw+2XP0vDQBiHf7Wlq63gLAgV/QpOBnEpZHJycBL6Lq2LuFq6Kn6AK2RxKQhu2aS0XQT7DbTgLqVGR4OlDtL8uUu8S3Lape/Wy93z5L1r7t4DlrHoyCXrznZRhEsPWgUsj0PUsC886KKNO5pmErAKWjj6tUsHTRqlErBVXONEaR4snNFHQgHbQ08JPg+D+lHNKzH4ekI80GP1qOZ8JP4ClwnxAFA1Z/ZAQcDqqfAAYJgTexhuEtYg8dwLkvBacAJWxlsmPACskeP/4Bf5KjOeY4QyYBU8SwZv4x2P2JD02vI/vXAGLcnAFj3RK06lOQQ4gQwU5v8FO3Bxg2OpwluHQqDxQDpsE5/SPnPWrThFNcXBKuGxvClieXxpFACFn43cz6CsNMygHAylnmV+ita1vr/HS5qBeggZFDULirzA1SxweYGTEhQXDi8YaxaM/zsDmqKrEd+d10vBraKtUeCxgoJ7jQKPFRCQg44mfMc/NJOeaGoRd6LRCJYGvBWsVflD/1yDIMTgBOQobsbxYVDoixJqU+qjkQHf4EvgiNLRHpqzlHk0SairIotfe2BOUE3x9hFl26LuBwD1UVL+01ooReMXe0fzJH95yxRkie/Jy5DGN/4FegI2+YzMAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAxLTIzVDAxOjE4OjQxKzA4OjAw3fCu8gAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMS0yM1QwMToxODo0MSswODowMKytFk4AAAAASUVORK5CYII=");
+//				titleView.drawBitmap(bitmap, {}, {
+//					top: "10px",
+//					left: about_left + "px",
+//					width: "24px",
+//					height: "24px"
+//				});
+//
+//				titleView.interceptTouchEvent(true);
+				document.getElementById("sideMenu").addEventListener("click", function(e) {
+					var x = e.clientX;
+					if(x < 44) { //触发menu菜单
+						var _left = parseInt(_self.getStyle().left);
+						if(_left > 0) { //处于显示状态
+							closeMenu();
+						} else {
+							openMenu();
+						}
+					}
+				}, false);
+
+				//启用侧滑拖拽操作，延时的原因是menu页是延时创建的，所以这里需要相应延时
+				setTimeout(function() {
+					_self.drag({
+						direction: "right",
+						moveMode: "followFinger"
+					}, {
+						view: menu,
+						moveMode: "follow"
+					}, function(e) {
+						//console.log(JSON.stringify(e));
+					});
+				}, 350);
+				
+			});
+			/**
+			 * 显示侧滑菜单
+			 */
+			function openMenu() {
+				plus.webview.startAnimation({
+						'view': _self,
+						'styles': {
+							'fromLeft': '0',
+							'toLeft': "70%"
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "-70%",
+							'toLeft': '0'
+						},
+						'action': 'show'
+					},
+					function(e) {
+						//console.log(JSON.stringify(e));
+						if(e.id == menu.id) { //侧滑菜单打开
+						}
+					}.bind(this)
+				)
+			};
+			/**
+			 * 关闭菜单
+			 */
+			function closeMenu() {
+				_self.setStyle({
+					mask: "none"
+				})
+				plus.webview.startAnimation({
+						'view': _self,
+						'styles': {
+							'fromLeft': '70%',
+							'toLeft': "0",
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "0",
+							'toLeft': '-70%'
+						},
+						'action': 'show'
+					},
+					function(e) {
+						console.log(JSON.stringify(e));
+						if(e.id == _self.id) {}
+					}.bind(this)
+				)
+			};
+			window.addEventListener("menu:close", closeMenu);
+
+			var _toast = false;
+
+			mui.back = function() {
+				if(parseInt(_self.getStyle().left) > 0) {
+					closeMenu();
+					return;
+				}
+
+				if(!_toast || !_toast.isVisible()) {
+					_toast = mui.toast('再按一次返回键退出', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else {
+					plus.runtime.quit();
+				}
+			}
+
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(parseInt(_self.getStyle().left) > 0) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
 		</script>
 	</body>
 

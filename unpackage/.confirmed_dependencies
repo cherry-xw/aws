@@ -1,1 +1,31 @@
-null
+{
+  "index.html": {
+    "resources": [
+      "pages/main.html",
+      "pages/basic/main.html"
+    ],
+    "refer": [
+      "pages/main.html",
+      "pages/basic/main.html",
+      "menu.html",
+      "index-menu.html"
+    ]
+  },
+  "menu.html": {
+    "refer": [
+      "pages/basic/main.html"
+    ],
+    "resources": []
+  },
+  "pages/basic/main.html": {
+    "refer": [
+      "menu.html"
+    ],
+    "resources": []
+  },
+  "index-menu.html": {
+    "refer": [
+      "pages/basic/main.html"
+    ]
+  }
+}
