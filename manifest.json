@@ -145,7 +145,9 @@
 				"refer": [
 					"index-menu.html",
 					"examples/guide.html",
-					"examples/locker-dom.html"
+					"examples/locker-dom.html",
+					"pages/login/login.html",
+					"pages/pro/pro.html"
 				],
 				"priority": 0
 			},
