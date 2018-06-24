@@ -139,7 +139,8 @@
 					"css/mui.min.css",
 					"js/update.js",
 					"list.html",
-					"pages/basic/main.html"
+					"pages/basic/main.html",
+					"css/base.css"
 				],
 				"refer": [
 					"index-menu.html",
