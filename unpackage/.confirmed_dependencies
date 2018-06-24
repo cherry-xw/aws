@@ -10,7 +10,13 @@
 			"pages/main.html",
 			"pages/basic/main.html",
 			"menu.html",
+<<<<<<< HEAD
 			"index-menu.html"
+=======
+			"index-menu.html",
+			"pages/login/login.html",
+			"pages/pro/pro.html"
+>>>>>>> page-main
 		]
 	},
 	"menu.html": {

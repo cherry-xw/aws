@@ -31,6 +31,20 @@
 		<script>
 			mui.init({
 				subpages: [{
+					url: 'pages/pro/pro.html',
+					id: 'pro_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
+					url: 'pages/login/login.html',
+					id: 'login_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
 					url: 'pages/basic/main.html',
 					id: 'main_page',
 					styles: {
@@ -88,48 +102,12 @@
 				}, 200);
 				//绘制顶部图标
 				_self = plus.webview.currentWebview();
-//				var titleView = _self.getNavigationbar();
-//
-//				if(!titleView) {
-//					titleView = plus.webview.getLaunchWebview().getNavigationbar();
-//				}
-//
-//				titleView.drawRect("#cccccc", {
-//					top: "43px",
-//					height:"1px",
-//					left: "0px"
-//				}); //绘制底部边线
-//
 //				//开启回弹
 				_self.setStyle({
 					bounce: "vertical",
 					bounceBackground:"#efeff4",
 					popGesture:'none'//首页有侧滑菜单，因此屏蔽首页的侧滑关闭功能
 				});
-//
-//				//绘制左上角menu图标
-//				var bitmap_menu = new plus.nativeObj.Bitmap("menu");
-//				bitmap_menu.loadBase64Data("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAKlBMVEUAAAAAev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8AAABINtoqAAAADHRSTlMA/fPQ0M/e3tzs7OjgY5g4AAAAAWJLR0QAiAUdSAAAAAd0SU1FB+EBFwEbOGGUPSIAAAA2SURBVDjLY2AY9oDxDBZwCJ8EswsW4DrQ/hicgPTQZSvHAioG2h+DE5AeupyrsIDVA+0PqgEAu36BkQX5nBQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDEtMjNUMDE6Mjc6NTYrMDg6MDC8FK1uAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTAxLTIzVDAxOjI3OjU2KzA4OjAwzUkV0gAAAABJRU5ErkJggg==");
-//				titleView.drawBitmap(bitmap_menu, {
-//					color: '#fff'
-//				}, {
-//					top: "10px",
-//					left: "10px",
-//					width: "24px",
-//					height: "24px"
-//				});
-//
-//				var about_left = window.innerWidth - 34;
-//				var bitmap = new plus.nativeObj.Bitmap("about");
-//				bitmap.loadBase64Data("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAHdElNRQfhARcBEina5qaZAAAB10lEQVRYw+2XP0vDQBiHf7Wlq63gLAgV/QpOBnEpZHJycBL6Lq2LuFq6Kn6AK2RxKQhu2aS0XQT7DbTgLqVGR4OlDtL8uUu8S3Lape/Wy93z5L1r7t4DlrHoyCXrznZRhEsPWgUsj0PUsC886KKNO5pmErAKWjj6tUsHTRqlErBVXONEaR4snNFHQgHbQ08JPg+D+lHNKzH4ekI80GP1qOZ8JP4ClwnxAFA1Z/ZAQcDqqfAAYJgTexhuEtYg8dwLkvBacAJWxlsmPACskeP/4Bf5KjOeY4QyYBU8SwZv4x2P2JD02vI/vXAGLcnAFj3RK06lOQQ4gQwU5v8FO3Bxg2OpwluHQqDxQDpsE5/SPnPWrThFNcXBKuGxvClieXxpFACFn43cz6CsNMygHAylnmV+ita1vr/HS5qBeggZFDULirzA1SxweYGTEhQXDi8YaxaM/zsDmqKrEd+d10vBraKtUeCxgoJ7jQKPFRCQg44mfMc/NJOeaGoRd6LRCJYGvBWsVflD/1yDIMTgBOQobsbxYVDoixJqU+qjkQHf4EvgiNLRHpqzlHk0SairIotfe2BOUE3x9hFl26LuBwD1UVL+01ooReMXe0fzJH95yxRkie/Jy5DGN/4FegI2+YzMAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAxLTIzVDAxOjE4OjQxKzA4OjAw3fCu8gAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMS0yM1QwMToxODo0MSswODowMKytFk4AAAAASUVORK5CYII=");
-//				titleView.drawBitmap(bitmap, {}, {
-//					top: "10px",
-//					left: about_left + "px",
-//					width: "24px",
-//					height: "24px"
-//				});
-//
-//				titleView.interceptTouchEvent(true);
 				document.getElementById("sideMenu").addEventListener("click", function(e) {
 					var x = e.clientX;
 					if(x < 44) { //触发menu菜单
@@ -177,8 +155,8 @@
 					},
 					function(e) {
 						//console.log(JSON.stringify(e));
-						if(e.id == menu.id) { //侧滑菜单打开
-						}
+//						if(e.id == menu.id) { //侧滑菜单打开
+//						}
 					}.bind(this)
 				)
 			};
@@ -238,6 +216,23 @@
 					openMenu();
 				}
 			}
+			
+			window.addEventListener('changeTitle',function(event){
+				//获得事件参数
+				var title = "基础产品";
+				switch (event.detail.title){
+					case "login_page":
+						title = "登录";
+						break;
+					case "pro_page":
+						title = "专业产品";
+						break;
+					default:
+						title = "基础产品";
+						break;
+				}
+				mui("#title")[0].innerHTML = title;
+			});
 		</script>
 	</body>
 
