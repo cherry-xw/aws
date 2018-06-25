@@ -66,10 +66,16 @@
 			var subWebview = null,
 				template = null,
 				index = null;
+			var pages = [];
 			mui.plusReady(function() {
 				//获得主页面webview引用；
 				index = plus.webview.currentWebview().opener();
 				var _self = plus.webview.currentWebview();
+				var alinks = mui('a');
+				for(var i = 0; i < alinks.length; i++){
+					var tt = alinks[i].getAttribute("href")
+					pages[tt] = plus.webview.getWebviewById(tt)
+				}
 				_self.drag({
 					direction: "left",
 					moveMode: "followFinger"
@@ -78,16 +84,15 @@
 					moveMode: "follow"
 				}, function(e) {});
 
-			})
-			mui('.mui-table-view').on('tap', 'a', function() {
-				var page_title = this.getAttribute("href");
-				var page = plus.webview.getWebviewById(page_title);
-				mui.fire(index,'changeTitle',{
-				    title: page_title
+				mui('.mui-table-view').on('tap', 'a', function() {
+					var page_title = this.getAttribute("href");
+					pages[page_title].show();
+					mui.fire(index,'changeTitle',{
+					    title: page_title
+					});
+					close();
 				});
-				page.show();
-				close();
-			});
+			})
 
 			/**
 			 * 关闭侧滑菜单

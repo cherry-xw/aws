@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-content{
+				background-color: #555;
+				color: #fff;
+			}
+			.boxes{
+				margin: 20px;
+			}
+			.place{
+				font-size: 3em;
+				line-height: 100px;
+				padding: 5px;
+				color: #fff;
+			}
+			.pollution{
+				font-size: 4em;
+			}
+			.emphasize{
+				font-size: 1.2em;
+			}
+			.nomel-text{
+				font-size: 0.8em;
+			}
+			.pollution-tag{
+				padding: 5px;
+				font-size: 1.3em;
+				color: white;
+				background-color: red;
+				float: left;
+				margin: 5px 15px 5px 0;
+			}
+			.card{
+				display: inline-block;
+				background-color: #ddd;
+				margin: 10px 5px;
+				width: 70px;
+				height: 70px;
+			}
+			.card-head-warning{
+				background-color: orange;
+				height: 0;
+				line-height: 30px;
+				text-align: center;
+				padding-bottom: 30px;
+			}
+			.card-head-safe{
+				background-color: green;
+				height: 0;
+				line-height: 30px;
+				text-align: center;
+				padding-bottom: 30px;
+			}
+			.card-head-danger{
+				background-color: red;
+				height: 0;
+				line-height: 30px;
+				text-align: center;
+				padding-bottom: 30px;
+			}
+			.card-content{
+				font-size: 1.2em;
+				height: 0;
+				line-height: 40px;
+				text-align: center;
+				padding-bottom: 40px;
+				color: #555;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content mui-fullscreen">
+		    <div class="boxes">
+		    	<span class="place">南京</span>
+		    	[<span>修改</span>]
+		    </div>
+		    <div class="boxes">
+		    	<span class="pollution">295</span>
+		    	<span style="font-size: 1.5em;">AQI</span>
+		    	<span class="nomel-text">排行</span>
+		    	<span class="emphasize">45</span>
+		    	<span class="nomel-text">位，击败了</span>
+		    	<span class="emphasize">86</span>
+		    	<span class="nomel-text">%的城市</span>
+		    </div>
+		    <div style="height: 3px;border-bottom: 2px dotted #000; margin: -15px 20px 0 20px;color: #eee;"></div>
+		    <div class="boxes" style="margin-top: 10px;">
+				<span class="pollution-tag">重度污染</span>
+				<div style="font-size: 0.9em;">
+					首要污染物：<span>PM10</span>
+				</div>
+				<div>
+					<span style="font-size: 0.7em;">2018年6月25日</span>
+				</div>
+		    </div>
+		    <div class="boxes">
+		    	<div class="card">
+		    		<div class="card-head-warning">PM2.5</div>
+		    		<div class="card-content">94</div>
+		    	</div>
+		    	<div class="card">
+		    		<div class="card-head-danger">PM10</div>
+		    		<div class="card-content">413</div>
+		    	</div>
+		    	<div class="card">
+		    		<div class="card-head-warning">SO2</div>
+		    		<div class="card-content">24</div>
+		    	</div>
+		    	<div class="card">
+		    		<div class="card-head-safe">NO2</div>
+		    		<div class="card-content">45</div>
+		    	</div>
+		    	<div class="card">
+		    		<div class="card-head-safe">CO</div>
+		    		<div class="card-content">0.800</div>
+		    	</div>
+		    	<div class="card">
+		    		<div class="card-head-safe">O3</div>
+		    		<div class="card-content">153</div>
+		    	</div>
+		    </div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+		</script>
+	</body>
+
+</html>

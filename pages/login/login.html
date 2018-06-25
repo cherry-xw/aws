@@ -6,15 +6,105 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.login-page {
+				position: absolute;
+				background: #fff url(../../imgs/back.jpg) no-repeat fixed bottom;
+				/*background-size: 100% 100%;*/
+				top: 0;
+				/*height: 500px;*/
+				/*bottom: 0;*/
+			}
+			.logo{
+				text-align: center;
+				color: #fff;
+				font-size: 3em;
+				line-height: 150px;
+				text-shadow: 5px 5px 5px #444;
+			}
+			.input-box {
+				margin: 15px 50px;
+				display: flex;
+				flex-direction: row;
+				border-bottom: 3px solid #007AFF;
+				box-shadow: 1px 1px 3px #999;
+			}
+			.input-label {
+				padding: 10px;
+				color: #333 !important;
+				background-color: rgba(255,255,255,0.3);
+				height: 45px !important;
+				width: 20% !important;
+				font-weight: bold;
+				text-align: center;
+				/*flex: 1;*/
+			}
+			.input-content {
+				width: 80% !important;
+				padding: 10px;
+				background-color: rgba(255,255,255,0.3) !important;
+				border-radius: 0 !important;
+				border: 0 !important;
+				margin: 0 !important;
+				height: 45px !important;
+				/*flex: 1;*/
+			}
+			.btn-father {
+				text-align: center;
+				margin: 15px 50px;
+			}
+			.mui-btn-primary {
+				width: 100%;
+			}
+		</style>
 	</head>
 
 	<body>
-		<div class="mui-content">
-		    登录
+		<div class="mui-content mui-scroll-wrapper mui-fullscreen login-page">
+		    <div class="mui-scroll">
+		    	<div class="logo">ASPI</div>
+			    <div class="input-box">
+			    	<label class="input-label mui-icon mui-icon-person"></label>
+			    	<input type="text" placeholder="请输入用户名" class="input-content"/>
+			    </div>
+			    <div class="input-box">
+			    	<label class="input-label mui-icon mui-icon-locked"></label>
+			    	<input type="text" placeholder="请输入密码" class="input-content"/>
+			    </div>
+			    <div class="btn-father">
+			    	<button class="mui-btn-primary">登录</button>
+			    </div>
+		    </div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
 			mui.init()
+			mui('.mui-scroll-wrapper').scroll({
+				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+			});
+			mui.plusReady(function() {  
+                var height1 = plus.android.invoke(plus.android.currentWebview(), "getHeight");//高度物理分辨率  
+                var height2 = plus.screen.resolutionHeight;//高度逻辑分辨率  
+                var top = plus.navigator.getStatusbarHeight();//状态栏高度  
+                document.getElementsByClassName("mui-content")[0].style.height = (height2) + "px";  
+//              console.log(height1);//1920  
+//              console.log(height2);//640  
+//              console.log(top);//22  
+            });
+//			var originalHeight=document.documentElement.clientHeight || document.body.clientHeight;
+//			window.onresize=function(){
+//			
+//			    //软键盘弹起与隐藏  都会引起窗口的高度发生变化
+//			    var  resizeHeight=document.documentElement.clientHeight || document.body.clientHeight;
+//			
+//			    if(resizeHeight*1<originalHeight*1){ //resizeHeight<originalHeight证明窗口被挤压了
+//			
+//			            plus.webview.currentWebview().setStyle({
+//			                height:originalHeight
+//			            });
+//			
+//			      }
+//			}
 		</script>
 	</body>
 
