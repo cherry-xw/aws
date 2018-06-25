@@ -14,7 +14,7 @@
 	"icons": {
 		"72": "icon.png"
 	},
-	"fullscreen": true,
+	"fullscreen": false,
 	"launch_path": "index.html",/*必选，应用的入口页面，默认为根目录下的index.html；也可以是网络地址，网络地址必须以http://或https://开头*/
 	"developer": {
 		"email": "",/*可选，开发者名称*/
@@ -37,18 +37,23 @@
 		"Messaging": {}
 	},
 	"plus": {
+		"launchwebview": {
+			"statusbar": {
+				"background": "#007aFF"
+			}
+		},
 		"statusbar": {
 			"immersed": "supportedDevice",
 			"style": "dark"
 		},
 		"popGesture": "close",/*设置应用默认侧滑返回关闭Webview窗口，none为无侧滑返回功能，hide为侧滑隐藏Webview窗口。参考ask.dcloud.net.cn/article/102*/
 		"splashscreen": {
-			"autoclose": false,/*如果为true，程序启动的图片可以自动关闭，如果为false，开发者需要手动关闭*/
-			"waiting": true
+			"autoclose": true,/*如果为true，程序启动的图片可以自动关闭，如果为false，开发者需要手动关闭*/
+			"waiting": true,"delay":"0"
 		},
 		"runmode": "normal",/*两个值，liberate或normal，前者在应用安装时释放资源，后者不需要释放资源*/
 		"signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==",/*可选，保留给应用签名，暂不使用*/
-		"distribute": {
+		"distribute": {"plugins":{"maps":{"baidu":{"appkey_ios":"9dxHHGDQUdVpnS69SlPUuqjmmPfpG5ey","appkey_android":"9dxHHGDQUdVpnS69SlPUuqjmmPfpG5ey","appkey":"","description":""}}},
 			"debug": "",/*可选，是否为debug模式，可取值：true表示debug模式运行，false表示release模式运行，默认值为false*/
 			"apple": {
 				"appid": "",/*iOS必选，苹果开发网站申请的appid，如io.dcloud.HelloMUI*/
@@ -122,9 +127,9 @@
 				"android": {
 					"mdpi": "", /*必选，240x282，普通屏启动图片*/
 					"ldpi": "", /*必选，320x442，大屏启动图片*/
-					"hdpi": "", /*必选，480x762，高分屏启动图片*/
-					"xhdpi": "", /*必选，720x1242，720P高分屏启动图片*/
-					"xxhdpi": ""
+					"hdpi": "F:/图/2/1.png", /*必选，480x762，高分屏启动图片*/
+					"xhdpi": "F:/图/2/2.png", /*必选，720x1242，720P高分屏启动图片*/
+					"xxhdpi": "F:/图/2/3.png"
 				}
 			}
 		},
@@ -140,14 +145,14 @@
 					"js/update.js",
 					"list.html",
 					"pages/basic/main.html",
-					"css/base.css"
+					"css/base.css",
+					"pages/pro/pro.html"
 				],
 				"refer": [
 					"index-menu.html",
 					"examples/guide.html",
 					"examples/locker-dom.html",
-					"pages/login/login.html",
-					"pages/pro/pro.html"
+					"pages/login/login.html"
 				],
 				"priority": 0
 			},
@@ -995,6 +1000,17 @@
 					"js/mui.js"
 				],
 				"refer": [],
+				"priority": 0
+			},
+			"pages/basic/main.html": {
+				"resources": [
+					"pages/basic/globalScattergram.html"
+				],
+				"refer": [
+					"pages/basic/abstract.html",
+					"pages/basic/GISScattergram.html",
+					"index.html"
+				],
 				"priority": 0
 			}
 		},

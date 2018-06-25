@@ -10,7 +10,29 @@
 
 	<body>
 		<div class="mui-content">
-		    专业
+		    <div class="mui-slider mui-fullscreen">
+			    <div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			        <a class="mui-control-item mui-active" href="#professionalAnalysis">专业分析</a>
+			        <a class="mui-control-item" href="#numericalModel">数值模式</a>
+			        <a class="mui-control-item" href="#singleStationAnalysis">单站分析</a>
+			    </div>
+			    <div class="mui-slider-progress-bar mui-col-xs-4" id="sliderProgressBar"></div>
+			    <div class="mui-slider-group">
+					<div id="professionalAnalysis" class="mui-slider-item mui-control-content mui-active">
+						<div class="mui-scroll-wrapper" style="min-height: 200px;">
+						    <div class="mui-scroll">
+						    	专业
+						    </div>
+						</div>
+					</div>
+					<div id="numericalModel" class="mui-slider-item mui-control-content">
+						数值
+					</div>
+					<div id="singleStationAnalysis" class="mui-slider-item mui-control-content">
+						单站
+					</div>
+			    </div>
+			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
