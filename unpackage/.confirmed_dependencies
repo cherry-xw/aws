@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"index.html": {
 		"resources": [
 			"pages/main.html",
@@ -36,4 +37,45 @@
 			"pages/basic/main.html"
 		]
 	}
+=======
+  "index.html": {
+    "resources": [
+      "pages/main.html",
+      "pages/basic/main.html",
+      "css/base.css",
+      "js/update.js",
+      "pages/pro/pro.html"
+    ],
+    "refer": [
+      "pages/main.html",
+      "pages/basic/main.html",
+      "menu.html",
+      "index-menu.html",
+      "pages/login/login.html",
+      "pages/pro/pro.html"
+    ]
+  },
+  "menu.html": {
+    "refer": [
+      "pages/basic/main.html"
+    ],
+    "resources": []
+  },
+  "pages/basic/main.html": {
+    "refer": [
+      "menu.html",
+      "pages/basic/globalScattergram.html",
+      "pages/basic/abstract.html",
+      "pages/basic/GISScattergram.html",
+      "index.html"
+    ],
+    "resources": []
+  },
+  "index-menu.html": {
+    "refer": [
+      "pages/basic/main.html"
+    ],
+    "resources": []
+  }
+>>>>>>> page-main
 }
