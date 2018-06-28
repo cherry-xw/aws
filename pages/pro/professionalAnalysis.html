@@ -32,9 +32,9 @@
 		<div class="mui-content mui-fullscreen">
 			<!--<div class="mui-content-padded">-->
 				<h5>空气温湿度</h5>
-				<div class="chart" id="barChart"></div>
+				<div class="chart" id="tehu"></div>
 				<h5>可吸入颗粒物</h5>
-				<div class="chart" id="lineChart"></div>
+				<div class="chart" id="pmpm"></div>
 				<!--<h5>饼图</h5>
 				<div class="chart" id="pieChart"></div>-->
 			<!--</div>-->
@@ -44,16 +44,16 @@
 		<script src="../../libs/echarts-all.js"></script>
 		<script>
 			mui.init();
-			var id = []
-				time = [],
-				windSpeed = [],
-				temperature = [],
-				humidity = [],
-				airPressure = [],
-				windDirection = [],
-				PM25 = [],
-				PM10 = [];
-			var getOption = function(legs, d1, d2) {
+			var id = ["-"]
+				time = ["-"],
+				windSpeed = ["-"],
+				temperature = ["-"],
+				humidity = ["-"],
+				airPressure = ["-"],
+				windDirection = ["-"],
+				PM25 = ["-"],
+				PM10 = ["-"];
+			var getOption = function(legs, dx, d1, d2) {
 				return {
 					legend: {
 						x: 'center',
@@ -82,7 +82,7 @@
 					calculable: false,
 					xAxis: [{
 						type: 'category',
-						data: id
+						data: dx
 					}],
 					yAxis: [{
 						type: 'value',
@@ -108,17 +108,36 @@
 			var byId = function(id) {
 				return document.getElementById(id);
 			};
-			var barChart = echarts.init(byId('barChart'));
-			barChart.setOption(getOption(['温度', '湿度'], temperature, humidity));
-			var lineChart = echarts.init(byId('lineChart'));
-			lineChart.setOption(getOption(['PM2.5', 'PM10'], PM25, PM10));
+			var tehu = echarts.init(byId('tehu'));
+			var pmpm = echarts.init(byId('pmpm'));
+			
+			tehu.setOption(getOption(['温度', '湿度'], id, temperature, humidity));
+			pmpm.setOption(getOption(['PM2.5', 'PM10'], id, PM25, PM10));
 			
 			var mask = mui.createMask();
+			
+			function refreshChart(chart, dx, data1, data2){
+				var opt = chart.getOption();
+				opt.xAxis[0].data = dx;
+				opt.series[0].data = data1;
+				opt.series[1].data = data2;
+				chart.setOption(opt);
+			}
 			
 			window.addEventListener('formatData',function(event){
 				if(event.detail.status){
 					mask.show();
 				}else{
+					mask.close();
+					id.length=0
+						time.length=0,
+						windSpeed.length=0,
+						temperature.length=0,
+						humidity.length=0,
+						airPressure.length=0,
+						windDirection.length=0,
+						PM25.length=0,
+						PM10.length=0;
 					if(event.detail.result){
 						event.detail.data.forEach(function(v){
 							time.push(v.hourTime);
@@ -130,9 +149,10 @@
 							PM10.push(v.pm10);
 							humidity.push(v.rh);
 							temperature.push(v.t);
-						})
+						});
+						refreshChart(tehu, id, temperature, humidity);
+						refreshChart(pmpm, id, PM25, PM10);
 					}
-					mask.close();
 				}
 			});
 		</script>
