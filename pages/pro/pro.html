@@ -35,10 +35,30 @@
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/webviewGroup.js"></script>
+		<!--<script src="../../js/jquery3.2.1.min.js"></script>-->
 		<script type="text/javascript">
 			mui.init();
 			var aniShow = {};
-			
+//			(function($){
+//				$(document).ready(function(){
+//				    $.ajax({  
+//						type : 'GET',
+//						url : 'https://www.itcrasher.club/wxclient/wx/listaspit?staID=1',
+//						timeout : 1000,
+//						dataType : "json",//数据类型为json
+////						headers: {
+////						}
+//						success : function(data){
+//							 console.log(JSON.stringify(data))
+//							 mui.toast(data.data.length)
+//						},  
+//						error:function(msg){  
+//							console.log("ajax error msg",msg);
+//						}  
+//					});
+//				});
+//			})(jQuery);
+
 			mui.plusReady(function() {
 				var group = new webviewGroup(plus.webview.currentWebview().id, {
                     items: [{
@@ -76,8 +96,43 @@
 				mui(".tab-head").on("tap", ".mui-control-item", function(e) {
 	                var wid = this.getAttribute("data-wid");
 	                group.switchTab(wid);
-	            });
+					
+	           });
+		});
+			
+		window.addEventListener('getProData',function(event){
+			var resData;
+			mui.ajax({
+            	url: 'https://www.itcrasher.club/wxclient/wx/listaspit',
+			    data: {staID:1},
+			    dataType: 'json',
+			    type: 'get',
+			    timeout: 10000,
+			    beforeSend: function() {
+			        plus.nativeUI.showWaiting("加载中");
+			        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
+			        	status: true
+			        });
+			    },
+			    success: function(res) {
+			    	resData = res.data;
+			    	mui.toast("获取数据成功");
+			        console.log("ee"+res.data.length);
+			    },
+			    error: function(res, type, errorThrown) {
+			    	mui.toast("获取数据失败，请下拉刷新");
+			        console.log(JSON.stringify(res));
+			    },
+			    complete: function() {
+			        plus.nativeUI.closeWaiting();
+			        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
+			        	status: false,
+			        	result: resData.message,
+			        	data: resData.data
+			        });
+			    }
 			});
+		});
 		</script>
 	</body>
 

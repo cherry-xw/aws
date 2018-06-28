@@ -90,6 +90,11 @@
 					mui.fire(index,'changeTitle',{
 					    title: page_title
 					});
+					if(page_title === 'pro_page'){
+						mui.fire(pages[page_title],'getProData',{
+						    
+						});
+					}
 					close();
 				});
 			})

@@ -7,6 +7,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style>
+			h5{
+				margin-left: 15px;
+			}
 			.chart {
 				height: 200px;
 				margin: 0px;
@@ -19,18 +22,21 @@
 			h5:first-child {
 				margin-top: 15px;
 			}
+			img{
+				width: 100%;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="mui-content mui-fullscreen">
 			<!--<div class="mui-content-padded">-->
-				<h5>柱状图</h5>
+				<h5>空气温湿度</h5>
 				<div class="chart" id="barChart"></div>
-				<h5>折线图</h5>
+				<h5>可吸入颗粒物</h5>
 				<div class="chart" id="lineChart"></div>
-				<h5>饼图</h5>
-				<div class="chart" id="pieChart"></div>
+				<!--<h5>饼图</h5>
+				<div class="chart" id="pieChart"></div>-->
 			<!--</div>-->
 			<div style="height: 100px;"></div>
 		</div>
@@ -38,34 +44,20 @@
 		<script src="../../libs/echarts-all.js"></script>
 		<script>
 			mui.init();
-			var getOption = function(chartType) {
-				var chartOption = chartType == 'pie' ? {
-					calculable: false,
-					series: [{
-						name: '访问来源',
-						type: 'pie',
-						radius: '65%',
-						center: ['50%', '50%'],
-						data: [{
-							value: 335,
-							name: '直接访问'
-						}, {
-							value: 310,
-							name: '邮件营销'
-						}, {
-							value: 234,
-							name: '联盟广告'
-						}, {
-							value: 135,
-							name: '视频广告'
-						}, {
-							value: 1548,
-							name: '搜索引擎'
-						}]
-					}]
-				} : {
+			var id = []
+				time = [],
+				windSpeed = [],
+				temperature = [],
+				humidity = [],
+				airPressure = [],
+				windDirection = [],
+				PM25 = [],
+				PM10 = [];
+			var getOption = function(legs, d1, d2) {
+				return {
 					legend: {
-						data: ['蒸发量', '降水量']
+						x: 'center',
+						data: legs
 					},
 					grid: {
 						x: 35,
@@ -73,20 +65,12 @@
 						y: 30,
 						y2: 25
 					},
+				    tooltip : {
+				        trigger: 'axis'
+				    },
 					toolbox: {
-						show: false,
+						show: true,
 						feature: {
-							mark: {
-								show: true
-							},
-							dataView: {
-								show: true,
-								readOnly: false
-							},
-							magicType: {
-								show: true,
-								type: ['line', 'bar']
-							},
 							restore: {
 								show: true
 							},
@@ -98,7 +82,7 @@
 					calculable: false,
 					xAxis: [{
 						type: 'category',
-						data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+						data: id
 					}],
 					yAxis: [{
 						type: 'value',
@@ -107,26 +91,50 @@
 						}
 					}],
 					series: [{
-						name: '蒸发量',
-						type: chartType,
-						data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+						name: legs[0],
+						type: 'line',
+            			smooth:true,
+            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
+						data: d1
 					}, {
-						name: '降水量',
-						type: chartType,
-						data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+						name: legs[1],
+						type: 'line',
+            			smooth:true,
+            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
+						data: d2
 					}]
 				};
-				return chartOption;
 			};
 			var byId = function(id) {
 				return document.getElementById(id);
 			};
 			var barChart = echarts.init(byId('barChart'));
-			barChart.setOption(getOption('bar'));
+			barChart.setOption(getOption(['温度', '湿度'], temperature, humidity));
 			var lineChart = echarts.init(byId('lineChart'));
-			lineChart.setOption(getOption('line'));
-			var pieChart = echarts.init(byId('pieChart'));
-			pieChart.setOption(getOption('pie'));
+			lineChart.setOption(getOption(['PM2.5', 'PM10'], PM25, PM10));
+			
+			var mask = mui.createMask();
+			
+			window.addEventListener('formatData',function(event){
+				if(event.detail.status){
+					mask.show();
+				}else{
+					if(event.detail.result){
+						event.detail.data.forEach(function(v){
+							time.push(v.hourTime);
+							windSpeed.push(v.ff);
+							id.push(v.id);
+							airPressure.push(v.p);
+							windDirection.push(v.fd);
+							PM25.push(v.pm25);
+							PM10.push(v.pm10);
+							humidity.push(v.rh);
+							temperature.push(v.t);
+						})
+					}
+					mask.close();
+				}
+			});
 		</script>
 	</body>
 
