@@ -87,38 +87,40 @@
                 var height2 = plus.screen.resolutionHeight;//高度逻辑分辨率  
                 var top = plus.navigator.getStatusbarHeight();//状态栏高度  
                 document.getElementsByClassName("mui-content")[0].style.height = (height2) + "px";
-           });
-           
+            });
+            
             var mask=mui.createMask();//遮罩层
-			mui(document.body).on('tap','#login',function(){
-				mui.ajax('http://127.0.0.1/login',{
-				    data:{
-				        userName:"userName",
-				        userPwd:"userPwd"
-				    },
-				    dataType: 'json', //服务器返回json格式数据
-			        type: 'post', //HTTP请求类型
-			        timeout: 10000, //超时时间设置为10秒；
-				    beforeSend: function() {
-				        plus.nativeUI.showWaiting("登录中...");
-				        mask.show();//显示遮罩层
-				    },
-				    complete: function() {
-				        plus.nativeUI.closeWaiting();
-				        mask.closed();//关闭遮罩层
-				    },
-				    success: function(data) {
-				        //服务器返回响应，根据响应结果，分析是否登录成功； 
-				        if(data=='1'){
-				            mui.alert('登录成功');
-				        }
-				    },
-				    error: function(xhr, type, errorThrown) {
-				        mui.alert('服务器连接超时，请稍后再试');
-				    }
-				});
+			mui('.btn-father').on('tap','#login',function(){
+//				mui.ajax('http://127.0.0.1/login',{
+//				    data:{
+//				        userName:"userName",
+//				        userPwd:"userPwd"
+//				    },
+//				    dataType: 'json', //服务器返回json格式数据
+//			        type: 'post', //HTTP请求类型
+//			        timeout: 10000, //超时时间设置为10秒；
+//				    beforeSend: function() {
+//				        plus.nativeUI.showWaiting("登录中...");
+//				        mask.show();//显示遮罩层
+//				    },
+//				    complete: function() {
+//				        plus.nativeUI.closeWaiting();
+//				        mask.closed();//关闭遮罩层
+//				    },
+//				    success: function(data) {
+//				        //服务器返回响应，根据响应结果，分析是否登录成功； 
+//				        if(data=='1'){
+//				            mui.alert('登录成功');
+//				        }
+//				    },
+//				    error: function(xhr, type, errorThrown) {
+//				        mui.alert('服务器连接超时，请稍后再试');
+//				    }
+//				});
+				mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
+		        	islogin: true
+		        });
 			});
-
 		</script>
 	</body>
 

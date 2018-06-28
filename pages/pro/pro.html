@@ -130,6 +130,11 @@
 			        	result: resData.message,
 			        	data: resData.data
 			        });
+			        mui.fire(plus.webview.getWebviewById('singleStationAnalysis.html'),'formatData',{
+			        	status: false,
+			        	result: resData.message,
+			        	data: resData.data[resData.data.length-1]
+			        });
 			    }
 			});
 		});

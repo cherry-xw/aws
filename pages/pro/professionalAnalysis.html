@@ -31,8 +31,8 @@
 	<body>
 		<div class="mui-content mui-fullscreen">
 			<!--<div class="mui-content-padded">-->
-				<h5>空气温湿度</h5>
-				<div class="chart" id="tehu"></div>
+				<!--<h5>空气温湿度</h5>
+				<div class="chart" id="tehu"></div>-->
 				<h5>可吸入颗粒物</h5>
 				<div class="chart" id="pmpm"></div>
 				<!--<h5>饼图</h5>
@@ -108,10 +108,10 @@
 			var byId = function(id) {
 				return document.getElementById(id);
 			};
-			var tehu = echarts.init(byId('tehu'));
+//			var tehu = echarts.init(byId('tehu'));
 			var pmpm = echarts.init(byId('pmpm'));
 			
-			tehu.setOption(getOption(['温度', '湿度'], id, temperature, humidity));
+//			tehu.setOption(getOption(['温度', '湿度'], id, temperature, humidity));
 			pmpm.setOption(getOption(['PM2.5', 'PM10'], id, PM25, PM10));
 			
 			var mask = mui.createMask();
@@ -140,17 +140,17 @@
 						PM10.length=0;
 					if(event.detail.result){
 						event.detail.data.forEach(function(v){
-							time.push(v.hourTime);
-							windSpeed.push(v.ff);
 							id.push(v.id);
-							airPressure.push(v.p);
-							windDirection.push(v.fd);
+//							time.push(v.hourTime);
+//							windSpeed.push(v.ff);
+//							airPressure.push(v.p);
+//							windDirection.push(v.fd);
+//							humidity.push(v.rh);
+//							temperature.push(v.t);
 							PM25.push(v.pm25);
 							PM10.push(v.pm10);
-							humidity.push(v.rh);
-							temperature.push(v.t);
 						});
-						refreshChart(tehu, id, temperature, humidity);
+//						refreshChart(tehu, id, temperature, humidity);
 						refreshChart(pmpm, id, PM25, PM10);
 					}
 				}

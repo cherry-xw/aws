@@ -67,6 +67,7 @@
 				template = null,
 				index = null;
 			var pages = [];
+			var isLogined = false; // 是否已经登录状态
 			mui.plusReady(function() {
 				//获得主页面webview引用；
 				index = plus.webview.currentWebview().opener();
@@ -83,19 +84,27 @@
 					view: index,
 					moveMode: "follow"
 				}, function(e) {});
-
+				// 点击切换页面事件
 				mui('.mui-table-view').on('tap', 'a', function() {
 					var page_title = this.getAttribute("href");
-					pages[page_title].show();
-					mui.fire(index,'changeTitle',{
-					    title: page_title
-					});
-					if(page_title === 'pro_page'){
-						mui.fire(pages[page_title],'getProData',{
-						    
+					// 如果未登录，那么就要无法跳转到
+					if(isLogined || page_title != 'pro_page'){
+						pages[page_title].show();
+						mui.fire(index,'changeTitle',{
+						    title: page_title
 						});
+						if(page_title === 'pro_page'){
+							mui.fire(pages[page_title],'getProData',{});
+						}
+					}else {
+						mui.toast("专业产品需要登录后查看");
+						pages['login_page'].show();
 					}
 					close();
+				});
+				// 监听登录事件
+				window.addEventListener('gologin',function(event){
+					isLogined = event.detail.islogin;
 				});
 			})
 
