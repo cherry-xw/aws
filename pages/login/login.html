@@ -65,11 +65,25 @@
 		    	<div class="logo">ASPI</div>
 			    <div class="input-box">
 			    	<label class="input-label mui-icon mui-icon-person"></label>
-			    	<input type="text" placeholder="请输入用户名" class="input-content"/>
+			    	<input 
+			    		type="text" 
+			    		placeholder="请输入用户名"
+			    		style="ime-mode:disabled"
+			    		class="input-content" 
+			    		id="username" 
+			    		onkeyup="checkInputName(value)"
+			    	/>
 			    </div>
 			    <div class="input-box">
 			    	<label class="input-label mui-icon mui-icon-locked"></label>
-			    	<input type="text" placeholder="请输入密码" class="input-content"/>
+			    	<input 
+			    		type="password" 
+			    		placeholder="请输入密码"
+			    		style="ime-mode:disabled"
+			    		class="input-content" 
+			    		id="userpwd"
+			    		onkeyup="checkInputPwd(value)"
+			    	/>
 			    </div>
 			    <div class="btn-father">
 			    	<button class="mui-btn-primary" id="login">登录</button>
@@ -79,6 +93,57 @@
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
 			mui.init()
+			var isCanLogin = false; // 是否允许登录
+			var toast;
+			function checkInputName(value){
+				var reg = /^[0-9a-zA-Z_]+$/g;
+				if(reg.test(value) || value.length === 0){
+					isCanLogin = true;
+					return
+				}
+				isCanLogin = false;
+				if(toast){
+					setTimeout(function(){
+						toast = ''
+					},1000)
+				}else{
+					toast = mui.toast("用户名只允许输入数字字母下划线");
+				}
+			}
+			function checkInputPwd(value){
+				var reg = /^[0-9a-zA-Z_]+$/g;
+				if(reg.test(value) || value.length === 0){
+					isCanLogin = true;
+					return
+				}
+				isCanLogin = false;
+				if(toast){
+					setTimeout(function(){
+						toast = ''
+					},1000)
+				}else{
+					toast = mui.toast("密码只允许输入数字字母下划线");
+				}
+			}
+			function setLocalUser(name, pass, isLogined){
+				var user = {
+					username: name,
+					passwd: pass,
+					islogin: isLogined
+				}
+				localStorage.setItem('user', JSON.stringify(user));
+			}
+			function getLocalUser(){
+				var user = JSON.parse(localStorage.getItem('user'));
+            	mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
+		        	islogin: user.islogin,
+				    username: user.username
+		        });
+				isCanLogin = true;
+		        mui('#username')[0].value = user.username;
+		        mui('#userpwd')[0].value = user.passwd;
+				return user;
+			}
 			mui('.mui-scroll-wrapper').scroll({
 				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
 			});
@@ -87,40 +152,78 @@
                 var height2 = plus.screen.resolutionHeight;//高度逻辑分辨率  
                 var top = plus.navigator.getStatusbarHeight();//状态栏高度  
                 document.getElementsByClassName("mui-content")[0].style.height = (height2) + "px";
+                
+                // 初始化之前登录的用户
+            	getLocalUser();
+            	
+	            var mask=mui.createMask();//遮罩层
+	            var toast_login;
+				mui('.btn-father').on('tap','#login',function(){
+					var name = mui('#username')[0].value;
+					var pwd = mui('#userpwd')[0].value
+					if(!name || !pwd){
+						if(toast_login)
+							setTimeout(function(){
+								toast = ''
+							},1000)
+						else{
+							toast_login = mui.toast("用户名密码不能为空");
+						}
+						return
+					}else if(!isCanLogin){
+						if(toast_login)
+							setTimeout(function(){
+								toast = ''
+							},1000)
+						else{
+							toast_login = mui.toast("用户名密码只允许输入数字、字母及下划线");
+						}
+						return
+					}
+					mui.ajax({
+		            	url: 'https://www.itcrasher.club/wxclient/wx/login',
+					    data: {
+					    	name: name,
+					    	pwd: pwd
+					    },
+					    dataType: 'json',
+					    type: 'post',
+					    timeout: 10000,
+					    beforeSend: function() {
+					        mask.show();
+					        plus.nativeUI.showWaiting();
+					    },
+					    success: function(res) {
+					    	if(res.message === 'success'){
+					    		mui.toast("登录成功");
+								setLocalUser(name, pwd, true);
+								mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
+						        	islogin: true,
+								    username: res.user.name
+						        });
+								mui.fire(plus.webview.getWebviewById('logined_page'),'username',{
+								    username: res.user.name
+								});
+						        plus.webview.getWebviewById('logined_page').show();
+					    	}else{
+								setLocalUser(name, pwd, false);
+					    		mui.toast("登录失败，请检查用户名密码");
+					    	}
+					    	
+					        console.log(JSON.stringify(res));
+					    },
+					    error: function(res, type, errorThrown) {
+					    	mui.toast("登录失败");
+							setLocalUser(name, pwd, false);
+					        console.log(JSON.stringify(res));
+					    },
+					    complete: function() {
+					        mask.close();
+					        plus.nativeUI.closeWaiting();
+					    }
+					});
+				});
             });
-            
-            var mask=mui.createMask();//遮罩层
-			mui('.btn-father').on('tap','#login',function(){
-//				mui.ajax('http://127.0.0.1/login',{
-//				    data:{
-//				        userName:"userName",
-//				        userPwd:"userPwd"
-//				    },
-//				    dataType: 'json', //服务器返回json格式数据
-//			        type: 'post', //HTTP请求类型
-//			        timeout: 10000, //超时时间设置为10秒；
-//				    beforeSend: function() {
-//				        plus.nativeUI.showWaiting("登录中...");
-//				        mask.show();//显示遮罩层
-//				    },
-//				    complete: function() {
-//				        plus.nativeUI.closeWaiting();
-//				        mask.closed();//关闭遮罩层
-//				    },
-//				    success: function(data) {
-//				        //服务器返回响应，根据响应结果，分析是否登录成功； 
-//				        if(data=='1'){
-//				            mui.alert('登录成功');
-//				        }
-//				    },
-//				    error: function(xhr, type, errorThrown) {
-//				        mui.alert('服务器连接超时，请稍后再试');
-//				    }
-//				});
-				mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
-		        	islogin: true
-		        });
-			});
 		</script>
 	</body>
 

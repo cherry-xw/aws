@@ -68,6 +68,7 @@
 				index = null;
 			var pages = [];
 			var isLogined = false; // 是否已经登录状态
+			var username = '' // 当前登录的用户名
 			mui.plusReady(function() {
 				//获得主页面webview引用；
 				index = plus.webview.currentWebview().opener();
@@ -87,27 +88,48 @@
 				// 点击切换页面事件
 				mui('.mui-table-view').on('tap', 'a', function() {
 					var page_title = this.getAttribute("href");
-					// 如果未登录，那么就要无法跳转到
-					if(isLogined || page_title != 'pro_page'){
+					// 如果未登录，那么就无法跳转到
+					if(page_title === 'pro_page'){
+						if(isLogined){
+							mui.fire(pages[page_title],'islogin',{
+							    islogin: true
+							});
+							pages[page_title].show();
+							mui.fire(index,'changeTitle',{
+							    title: page_title
+							});
+						}else{
+							mui.toast("专业产品需要登录后查看");
+							pages['login_page'].show();
+						}
+					}else if(page_title == 'login_page'){
+						if(isLogined){
+							mui.fire(plus.webview.getWebviewById('logined_page'),'username',{
+							    username: username
+							});
+							plus.webview.getWebviewById('logined_page').show();
+						}else{
+							pages[page_title].show();
+						}
+						mui.fire(index,'changeTitle',{
+						    title: page_title
+						});
+					}else {
 						pages[page_title].show();
 						mui.fire(index,'changeTitle',{
 						    title: page_title
 						});
-						if(page_title === 'pro_page'){
-							mui.fire(pages[page_title],'getProData',{});
-						}
-					}else {
-						mui.toast("专业产品需要登录后查看");
-						pages['login_page'].show();
 					}
 					close();
 				});
-				// 监听登录事件
-				window.addEventListener('gologin',function(event){
-					isLogined = event.detail.islogin;
-				});
 			})
 
+			// 监听登录事件
+			window.addEventListener('gologin',function(event){
+				isLogined = event.detail.islogin;
+				username = event.detail.username;
+			});
+			
 			/**
 			 * 关闭侧滑菜单
 			 */

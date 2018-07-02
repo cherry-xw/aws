@@ -43,6 +43,13 @@
 						bottom: '0px'
 					}
 				},{
+					url: 'pages/login/logined.html',
+					id: 'logined_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
 					url: 'pages/basic/main.html',
 					id: 'main_page',
 					styles: {
@@ -188,22 +195,6 @@
 			window.addEventListener("menu:close", closeMenu);
 
 			var _toast = false;
-
-//			mui.back = function() {
-//				if(parseInt(_self.getStyle().left) > 0) {
-//					closeMenu();
-//					return;
-//				}
-//
-//				if(!_toast || !_toast.isVisible()) {
-//					_toast = mui.toast('再按一次返回键退出', {
-//						duration: 'long',
-//						type: 'div'
-//					});
-//				} else {
-//					plus.runtime.quit();
-//				}
-//			}
 
 			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
 			mui.menu = function() {

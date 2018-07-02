@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.login-page {
+				position: absolute;
+				background: #fff url(../../imgs/back.jpg) no-repeat fixed bottom;
+				/*background-size: 100% 100%;*/
+				top: 0;
+				/*height: 500px;*/
+				/*bottom: 0;*/
+			}
+			.logo{
+				text-align: center;
+				color: #fff;
+				font-size: 3em;
+				line-height: 150px;
+				text-shadow: 5px 5px 5px #444;
+			}
+			.user-msg{
+				margin: 30px 50px;
+			}
+			.btn-father {
+				text-align: center;
+				margin: 15px 50px;
+			}
+			.mui-btn-danger {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content mui-scroll-wrapper mui-fullscreen login-page">
+		    <div class="mui-scroll">
+		    	<div class="logo">ASPI</div>
+			    <div class="user-msg">
+			    	当前登录：<span id="username"></span>
+			    </div>
+			    <div class="btn-father">
+			    	<button class="mui-btn-danger" id="login">退出登录</button>
+			    </div>
+		    </div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+                var height1 = plus.android.invoke(plus.android.currentWebview(), "getHeight");//高度物理分辨率  
+                var height2 = plus.screen.resolutionHeight;//高度逻辑分辨率  
+                var top = plus.navigator.getStatusbarHeight();//状态栏高度  
+                document.getElementsByClassName("mui-content")[0].style.height = (height2) + "px";
+            
+	            var mask=mui.createMask();//遮罩层
+	            var toast_login;
+				mui('.btn-father').on('tap','#login',function(){
+					mui.toast("退出登录成功");
+					mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
+			        	islogin: false
+				    });
+				    plus.webview.getWebviewById('login_page').show();
+		        });
+		        // 接收登录用户信息
+				window.addEventListener('username',function(event){
+					mui('#username')[0].innerHTML = event.detail.username;
+				});
+		    });
+		</script>
+	</body>
+
+</html>
