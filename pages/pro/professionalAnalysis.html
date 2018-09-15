@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			.mui-content{
+				padding: 0 15px;
+			}
+			.chart {
+				height: 280px;
+				margin: 0;
+				padding: 0;
+			}
+			h5 {
+				margin-left: 15px;
+				margin-top: 30px;
+				font-weight: bold;
+			}
+			h5:first-child {
+				margin-top: 15px;
+			}
+			img{
+				width: 100%;
+			}
+			.choose-site{
+				margin: 30px 1px;
+			}
+			.tab-title {
+				width: 30%;
+				height: 45px;
+			}
+			.tab-content {
+				width: 40%;
+				height: 45px;
+				background-color: rgba(200, 200, 200, 0.6);
+			}
+			#confirm {
+				width: 25%;
+				height: 45px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content mui-fullscreen mui-scroll-wrapper">
+			<div class="mui-scroll">
+			    <div class="choose-site">
+			    	<span class="tab-title">
+			    		选择站点：
+			    	</span>
+		    		<select id="stations" class="tab-content">
+			    		<option value="">default</option>
+			    	</select>
+			    	<button id="confirm">确认</button>
+			    </div>
+				<!--<div class="mui-content-padded">-->
+				<h5>ASPI 和 EE(kg/km2·h)</h5>
+				<div class="chart" id="aspiee"></div>
+				<h5>可吸入颗粒物</h5>
+				<div class="chart" id="pm1"></div>
+				<h5>细颗粒物</h5>
+				<div class="chart" id="pm2"></div>
+					<!--<h5>饼图</h5>
+					<div class="chart" id="pieChart"></div>-->
+				<!--</div>-->
+				<div style="height: 100px;"></div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/echarts.common.min.js"></script>
+		<script>
+			var stations = []
+			var data = []
+			var id = ["-"], time = ["-"], windSpeed = ["-"], temperature = ["-"],
+				humidity = ["-"], airPressure = ["-"], windDirection = ["-"],
+				PM25 = ["-"], PM10 = ["-"], aspi = ["-"], ee = ["-"];
+			mui.init({
+			  pullRefresh : {
+			    container:".mui-content",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+			    down : {
+			      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+			      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+			      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+			      range:'150px', //可选 默认100px,控件可下拉拖拽的范围
+			      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
+			      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+			      callback: function(){
+			      	mui.fire(plus.webview.getWebviewById('pro_page'),'getProData',{
+			      		staID: 1,
+			      		getStationsData: false
+			      	});
+			      }
+			    }
+			  }
+			});
+			function getOption(legs, dx, d1, color) {
+				return {
+					legend: { x: 'center', data: legs },
+					grid: { x: 35, x2: 35, y: 30, y2: 70 },
+				    tooltip : { trigger: 'axis' },
+					dataZoom: [{}],
+					calculable: false,
+					xAxis: { data: dx },
+					yAxis: {
+						type:  'value',
+						splitArea: { show: false }
+					},
+					series: [{
+						name: legs[0],
+						type: 'line',
+            			smooth:true,
+            			itemStyle: {
+            				normal: {
+            					color: color,
+            					areaStyle: { type: 'default' }
+            				}
+            			},
+						data: d1
+					}]
+				}
+			};
+			function doubleLine(legs, dx, d1, d2) {
+				return {
+					legend: { x: 'center', data: legs },
+					grid: {
+						left: 50,
+						right: 70
+					},
+				    tooltip : { 
+				    	trigger: 'axis',
+//				    	formatter: 
+				    },
+					dataZoom: [{}],
+					calculable: false,
+					xAxis: { 
+						data: dx
+					},
+					yAxis: [{
+						type: 'value',
+						name: 'ASPI',
+						position: 'left',
+						splitLine: {
+							show: false
+						},
+						splitArea: { show: false }
+					}, {
+						type: 'value',
+						name: 'EE(kg/km2·h)',
+						position: 'right',
+						splitArea: { show: false }
+					}],
+					series: [{
+						name: legs[0],
+						type: 'line',
+            			smooth: true,
+						data: d1
+					}, {
+						name: legs[1],
+						type: 'line',
+            			smooth: true,
+            			yAxisIndex: 1,
+//				        lineStyle: {
+//				            normal: {
+//				                type: 'dashed'
+//				            }
+//				        },
+						data: d2
+					}]
+				}
+			};
+			var byId = function(id) {
+				return document.getElementById(id);
+			};
+			var aspiee = echarts.init(byId('aspiee'));
+			var pm1 = echarts.init(byId('pm1'));
+			var pm2 = echarts.init(byId('pm2'));
+			
+			aspiee.setOption(doubleLine(['ASPI', 'EE'], id, aspi, ee));
+			pm1.setOption(getOption(['PM10'], id, PM10, "#00E3E3"));
+			pm2.setOption(getOption(['PM2.5'], id, PM25, "#FF60AF"));
+			
+			var mask = mui.createMask();
+			
+			function refreshChart(chart, dx, data1){
+				var opt = chart.getOption();
+				opt.xAxis[0].data = dx;
+				opt.series[0].data = data1;
+				chart.setOption(opt);
+			}
+			function refreshDoubleLineChart(chart, dx, data1, data2){
+				var opt = chart.getOption();
+				opt.xAxis[0].data = dx;
+				opt.series[0].data = data1;
+				opt.series[1].data = data2;
+				chart.setOption(opt);
+			}
+			
+			window.addEventListener('getStations', function(e){
+				stations = e.detail.stations;
+				console.log('stations= '+ JSON.stringify(stations))
+				var str = ''
+				for (var i = 0; i < stations.length; i++) {
+					str += '<option value='+stations[i].awsName+'>'+stations[i].awsName+'</option>'
+				}
+				mui('#stations')[0].innerHTML = str
+			})
+			
+			document.getElementById("confirm").addEventListener('tap', function(){
+				var sel = document.getElementById("stations");
+				var index = sel.selectedIndex;
+				console.log(stations[index])
+				if (stations[index]) {
+					console.log('staID='+stations[index].staID)
+					mui.fire(plus.webview.getWebviewById('pro_page'),'getProData',{
+						staID: stations[index].staID,
+						getStationsData: true
+					});
+				} else {
+					mui.fire(plus.webview.getWebviewById('pro_page'),'getProData',{
+						staID: 1,
+						getStationsData: false
+					});
+				}
+			})
+			
+			window.addEventListener('formatData',function(event){
+				if(event.detail.status){
+					mask.show();
+				}else{
+					mask.close();
+					if(event.detail.result){
+						data = event.detail.data
+						id.length=0;
+						time.length=0;
+//						windSpeed.length=0;
+//						temperature.length=0;
+//						humidity.length=0;
+//						airPressure.length=0;
+//						windDirection.length=0;
+						PM25.length=0;
+						PM10.length=0;
+						aspi.length=0;
+						ee.length=0;
+						for(var i = data.length-1; i >= 0; i--){
+							time.push(data[i].hourTime + ":00");
+							PM25.push(data[i].pm25);
+							PM10.push(data[i].pm10);
+							aspi.push(data[i].aspi);
+							ee.push(data[i].ee);
+		//					id.push(data[i].id);
+		//					windSpeed.push(data[i].ff);
+		//					airPressure.push(data[i].p);
+		//					windDirection.push(data[i].fd);
+		//					humidity.push(data[i].rh);
+		//					temperature.push(data[i].t)
+						}
+						refreshDoubleLineChart(aspiee, time, aspi, ee);
+						refreshChart(pm2, time, PM25);
+						refreshChart(pm1, time, PM10);
+					}
+					mui('.mui-content').pullRefresh().endPulldown();
+				}
+			});
+			
+		</script>
+	</body>
+
+</html>

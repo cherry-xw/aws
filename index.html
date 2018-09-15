@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<style type="text/css">
+			
+		</style>
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-icon mui-icon-bars mui-pull-left color-white mui-bg-primary" id="sideMenu"></span>
+		    <h1 class="mui-title mui-bg-primary color-white" id="title">基础产品</h1>
+			<span class="mui-icon mui-icon-more mui-pull-right color-white mui-bg-primary"></span>
+			<span class="mui-icon mui-icon-search away-right mui-pull-right color-white mui-bg-primary"></span>
+		    
+		</header>
+		<div class="mui-content">
+			
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				subpages: [{
+					url: 'pages/pro/pro.html',
+					id: 'pro_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
+					url: 'pages/login/login.html',
+					id: 'login_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
+					url: 'pages/login/logined.html',
+					id: 'logined_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				},{
+					url: 'pages/basic/main.html',
+					id: 'main_page',
+					styles: {
+						top: '45px',
+						bottom: '0px'
+					}
+				}]
+			});
+			var aniShow = "pop-in";
+			var menu = null,
+				showMenu = false;
+			var isInTransition = false;
+			var _self;
+			//只有ios支持的功能需要在Android平台隐藏；
+			if(mui.os.android) {
+				//Android平台暂时使用slide-in-right动画
+				if(parseFloat(mui.os.version) < 4.4) {
+					aniShow = "slide-in-right";
+				}
+			}
+			//初始化，并预加载webview模式的选项卡			
+			function preload() {
+
+				var menu_style = {
+					left: "-70%",
+					width: '70%',
+					popGesture: "none",
+					render:"always"
+				};
+
+				if(mui.os.ios) {
+					menu_style.zindex = -1;
+				}
+
+				//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+				menu = mui.openWindow({
+					id: 'index-menu',
+					url: 'index-menu.html',
+					styles: menu_style,
+					show: {
+						aniShow: 'none'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			mui.plusReady(function() {
+				plus.navigator.setStatusBarBackground("#007aFF");
+				plus.navigator.setFullscreen(false);
+				//仅支持竖屏显示
+				plus.screen.lockOrientation("portrait-primary");
+				//延迟的原因：优先打开启动导航页面，避免资源争夺
+				setTimeout(function() {
+					//预加载
+					preload();
+				}, 200);
+				//绘制顶部图标
+				_self = plus.webview.currentWebview();
+//				//开启回弹
+				_self.setStyle({
+					bounce: "vertical",
+					bounceBackground:"#007aFF",
+					popGesture:'none'//首页有侧滑菜单，因此屏蔽首页的侧滑关闭功能
+				});
+				document.getElementById("sideMenu").addEventListener("tap", function(e) {
+//					var x = e.clientX;
+//					if(x < 44) { //触发menu菜单
+						var _left = parseInt(_self.getStyle().left);
+						if(_left > 0) { //处于显示状态
+							closeMenu();
+						} else {
+							openMenu();
+						}
+//					}
+				}, false);
+
+				//启用侧滑拖拽操作，延时的原因是menu页是延时创建的，所以这里需要相应延时
+				setTimeout(function() {
+					_self.drag({
+						direction: "right",
+						moveMode: "followFinger"
+					}, {
+						view: menu,
+						moveMode: "follow"
+					}, function(e) {
+						//console.log(JSON.stringify(e));
+					});
+				}, 350);
+				
+			});
+			/**
+			 * 显示侧滑菜单
+			 */
+			function openMenu() {
+				plus.webview.startAnimation({
+						'view': _self,
+						'styles': {
+							'fromLeft': '0',
+							'toLeft': "70%"
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "-70%",
+							'toLeft': '0'
+						},
+						'action': 'show'
+					},
+					function(e) {
+						//console.log(JSON.stringify(e));
+//						if(e.id == menu.id) { //侧滑菜单打开
+//						}
+					}.bind(this)
+				)
+			};
+			/**
+			 * 关闭菜单
+			 */
+			function closeMenu() {
+				plus.webview.startAnimation({
+						'view': _self,
+						'styles': {
+							'fromLeft': '70%',
+							'toLeft': "0",
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "0",
+							'toLeft': '-70%'
+						},
+						'action': 'show'
+					},
+					function(e) {
+//						console.log(JSON.stringify(e));
+//						if(e.id == _self.id) {}
+					}.bind(this)
+				)
+			};
+			window.addEventListener("menu:close", closeMenu);
+
+			var _toast = false;
+
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(parseInt(_self.getStyle().left) > 0) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
+			
+			window.addEventListener('changeTitle',function(event){
+				//获得事件参数
+				var title = "基础产品";
+				switch (event.detail.title){
+					case "login_page":
+						title = "登录";
+						break;
+					case "pro_page":
+						title = "专业产品";
+						break;
+					default:
+						title = "基础产品";
+						break;
+				}
+				mui("#title")[0].innerHTML = title;
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,32 @@
+{
+  "index.html": {
+    "resources": [
+      "pages/pro/pro.html"
+    ],
+    "refer": [
+      "pages/login/login.html",
+      "pages/login/logined.html",
+      "index-menu.html",
+      "pages/pro/pro.html",
+      "pages/basic/main.html"
+    ]
+  },
+  "pages/pro/pro.html": {
+    "resources": [
+      "pages/pro/professionalAnalysis.html"
+    ],
+    "refer": [
+      "pages/pro/professionalAnalysis.html",
+      "pages/pro/singleStationAnalysis.html"
+    ]
+  },
+  "pages/basic/main.html": {
+    "resources": [
+      "pages/basic/globalScattergram.html"
+    ],
+    "refer": [
+      "pages/basic/globalScattergram.html",
+      "pages/basic/abstract.html"
+    ]
+  }
+}

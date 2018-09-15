@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.tab-head {
+				width: 100%;
+				display: flex;
+				flex-direction: row;
+			}
+			.col-4 {
+				flex: 1;
+			}
+			.tab-head>.mui-active{
+				border-bottom: 2px solid #007AFF !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-slider mui-fullscreen">
+			    <div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			    	<div class="tab-head">
+				        <a class="mui-control-item col-4 mui-active" href="#professionalAnalysis" data-wid="professionalAnalysis.html">专业分析</a>
+				        <!--<a class="mui-control-item col-4" href="#numericalModel" data-wid="numericalModel.html">数值模式</a>-->
+				        <a class="mui-control-item col-4" href="#singleStationAnalysis" data-wid="singleStationAnalysis.html">单站分析</a>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/webviewGroup.js"></script>
+		<script type="text/javascript">
+			var isLogined = false;
+			var username = 'test';
+			
+			mui.plusReady(function() {
+				var group = new webviewGroup(plus.webview.currentWebview().id, {
+                    items: [{
+                        id: "professionalAnalysis.html",
+                        url: "professionalAnalysis.html",
+                        styles: {
+                        	top: "40px"
+                        },
+                        extras: {}
+                    }, 
+//                  {
+//                      id: "numericalModel.html",
+//                      url: "numericalModel.html",
+//                      styles: {
+//                      	top: "40px"
+//                      },
+//                      extras: {}
+//                  },
+                    {
+                        id: "singleStationAnalysis.html",
+                        url: "singleStationAnalysis.html",
+                        styles: {
+                        	top: "40px"
+                        },
+                        extras: {}
+                    }],
+                    onChange: function(obj) {
+                        var c = document.querySelector(".mui-control-item.mui-active");
+                        if(c) {
+                            c.classList.remove("mui-active");
+                        }
+                        document.querySelector(".tab-head .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")").classList.add("mui-active");
+                    }
+                });
+                
+				mui(".tab-head").on("tap", ".mui-control-item", function(e) {
+	                var wid = this.getAttribute("data-wid");
+	                group.switchTab(wid);
+					
+	        	});
+
+				// 监听是否已经登录事件
+				window.addEventListener('islogin',function(event){
+					isLogined = event.detail.islogin;
+					username = event.detail.username;
+				});
+				
+				window.addEventListener('getProData',function(event){
+					var staID = event.detail.staID || 1
+					if (!event.detail.getStationsData) {
+						mui.ajax({
+			            	url: 'https://www.itcrasher.club/wxclient/wx/userstations',
+						    data: {uid: username},
+						    dataType: 'json',
+						    type: 'get',
+						    timeout: 10000,
+	//					    beforeSend: function () {
+	//					    	console.log(username)
+	//					    },
+						    success: function(res) {
+						        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'getStations',{
+						        	stations: res.data
+						        })
+						    },
+						    error: function(res, type, errorThrown) {
+						    	if(isLogined) mui.toast("获取站点信息失败，请下拉刷新");
+						        console.log(JSON.stringify(res));
+						    }
+						});
+					}
+					
+					mui.ajax({
+		            	url: 'https://www.itcrasher.club/wxclient/wx/listaspit',
+					    data: {staID: staID},
+					    dataType: 'json',
+					    type: 'get',
+					    timeout: 10000,
+					    beforeSend: function() {
+					        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
+					        	status: true
+					        });
+					        if (event.detail.getStationsData) {
+					        	plus.nativeUI.showWaiting();
+					        }
+					    },
+					    success: function(res) {
+					    	if(isLogined) mui.toast("获取数据成功");
+					        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
+					        	status: false,
+					        	result: res.message,
+					        	data: res.data
+					        });
+					        mui.fire(plus.webview.getWebviewById('singleStationAnalysis.html'),'formatData',{
+					        	status: false,
+					        	result: res.message,
+					        	data: res.data[0],
+					        	staID: staID
+					        });
+					        console.log("ee"+res.data.length);
+					    },
+					    error: function(res, type, errorThrown) {
+					    	if(isLogined) mui.toast("获取数据失败，请下拉刷新");
+					        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
+					        	status: false,
+					        	result: false,
+					        	data: {}
+					        });
+					        mui.fire(plus.webview.getWebviewById('singleStationAnalysis.html'),'formatData',{
+					        	status: false,
+					        	result: false,
+					        	data: {}
+					        });
+					        console.log(JSON.stringify(res));
+					    },
+					    complete: function() {
+					        if (event.detail.getStationsData) plus.nativeUI.closeWaiting();
+					    }
+					});
+				});
+			
+			});
+		</script>
+	</body>
+
+</html>

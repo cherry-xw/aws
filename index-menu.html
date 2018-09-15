@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<style type="text/css">
+			body,
+			.mui-content {
+				background-color: #333;
+				color: #fff;
+			}
+			
+			.title {
+				margin: 35px 15px 10px;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			.mui-table-view {
+				margin-bottom: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div class="title">产品类型</div>
+					<br />
+				    <ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted" style="color: #ddd;">
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" data-title-type="native" href="login_page">
+								登录
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" href="main_page">
+								基础产品
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" href="pro_page">
+								专业产品
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			var aniShow = "slide-in-right";
+
+			var subWebview = null,
+				template = null,
+				index = null;
+			var pages = [];
+			var isLogined = false; // 是否已经登录状态
+			var username = '' // 当前登录的用户名
+			mui.plusReady(function() {
+				//获得主页面webview引用；
+				index = plus.webview.currentWebview().opener();
+				var _self = plus.webview.currentWebview();
+				var alinks = mui('a');
+				for(var i = 0; i < alinks.length; i++){
+					var tt = alinks[i].getAttribute("href")
+					pages[tt] = plus.webview.getWebviewById(tt)
+				}
+				_self.drag({
+					direction: "left",
+					moveMode: "followFinger"
+				}, {
+					view: index,
+					moveMode: "follow"
+				}, function(e) {});
+				// 点击切换页面事件
+				mui('.mui-table-view').on('tap', 'a', function() {
+					var page_title = this.getAttribute("href");
+					// 如果未登录，那么就无法跳转到
+					if(page_title === 'pro_page'){
+						if(isLogined){
+							mui.fire(pages[page_title],'islogin',{
+							    islogin: true,
+							    username: username
+							});
+							pages[page_title].show();
+							mui.fire(index,'changeTitle',{
+							    title: page_title
+							});
+						}else{
+							mui.toast("专业产品需要登录后查看");
+							pages['login_page'].show();
+						}
+					}else if(page_title == 'login_page'){
+						if(isLogined){
+							mui.fire(plus.webview.getWebviewById('logined_page'),'username',{
+							    username: username
+							});
+							plus.webview.getWebviewById('logined_page').show();
+						}else{
+							pages[page_title].show();
+						}
+						mui.fire(index,'changeTitle',{
+						    title: page_title
+						});
+					}else {
+						pages[page_title].show();
+						mui.fire(index,'changeTitle',{
+						    title: page_title
+						});
+					}
+					close();
+				});
+			})
+
+			// 监听登录事件
+			window.addEventListener('gologin',function(event){
+				isLogined = event.detail.islogin;
+				username = event.detail.username;
+			});
+			
+			/**
+			 * 关闭侧滑菜单
+			 */
+			function close() {
+				mui.fire(mui.currentWebview.opener(), "menu:close");
+			}
+
+			mui.init({
+				swipeBack: false,
+				keyEventBind: {
+					backbutton: false //关闭back按键监听
+				}
+			});
+		</script>
+	</body>
+
+</html>
