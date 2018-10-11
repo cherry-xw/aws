@@ -5,7 +5,7 @@
 		"iPad"
 	],
 	"id": "H5A9B48C1",/*必选，应用的标识*/
-	"name": "awsApp",/*必选，应用名称*/
+	"name": "零尘环境",/*必选，应用名称*/
 	"version": {
 		"name": "1.0",/*必选，版本名称*/
 		"code": ""
@@ -109,9 +109,7 @@
 			"splashscreen": {
 				"ios": {
 					"iphone": {
-						"default": "", /*必选，320x480，iPhone3启动图片*/
-						"retina35": "",/*必选，640x960，3.5英寸设备(iPhone4)启动图片*/
-						"retina40": ""
+						"default": ""
 					},
 					"ipad": {
 						"portrait": "", /*可选，768x1004，需支持iPad时必选，iPad竖屏启动图片*/
@@ -127,9 +125,9 @@
 				"android": {
 					"mdpi": "", /*必选，240x282，普通屏启动图片*/
 					"ldpi": "", /*必选，320x442，大屏启动图片*/
-					"hdpi": "F:/图/2/1.png", /*必选，480x762，高分屏启动图片*/
-					"xhdpi": "F:/图/2/2.png", /*必选，720x1242，720P高分屏启动图片*/
-					"xxhdpi": "F:/图/2/3.png"
+					"hdpi": "unpackage/res/page1.png", /*必选，480x762，高分屏启动图片*/
+					"xhdpi": "unpackage/res/page2.png", /*必选，720x1242，720P高分屏启动图片*/
+					"xxhdpi": "unpackage/res/page3.png"
 				}
 			}
 		},
@@ -152,7 +150,8 @@
 					"index-menu.html",
 					"examples/guide.html",
 					"examples/locker-dom.html",
-					"pages/login/login.html"
+					"pages/login/login.html",
+					"pages/login/logined.html"
 				],
 				"priority": 0
 			},
@@ -1010,6 +1009,15 @@
 					"pages/basic/abstract.html",
 					"pages/basic/GISScattergram.html",
 					"index.html"
+				],
+				"priority": 0
+			},
+			"pages/pro/pro.html": {
+				"resources": [
+					"pages/pro/professionalAnalysis.html"
+				],
+				"refer": [
+					"pages/pro/singleStationAnalysis.html"
 				],
 				"priority": 0
 			}

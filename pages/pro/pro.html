@@ -37,6 +37,7 @@
 		<script src="../../js/webviewGroup.js"></script>
 		<script type="text/javascript">
 			var isLogined = false;
+			var username = 'test';
 			
 			mui.plusReady(function() {
 				var group = new webviewGroup(plus.webview.currentWebview().id, {
@@ -82,12 +83,36 @@
 				// 监听是否已经登录事件
 				window.addEventListener('islogin',function(event){
 					isLogined = event.detail.islogin;
+					username = event.detail.username;
 				});
 				
-				window.addEventListener('getProData',function(){
+				window.addEventListener('getProData',function(event){
+					var staID = event.detail.staID || 1
+					if (!event.detail.getStationsData) {
+						mui.ajax({
+			            	url: 'https://www.itcrasher.club/wxclient/wx/userstations',
+						    data: {uid: username},
+						    dataType: 'json',
+						    type: 'get',
+						    timeout: 10000,
+	//					    beforeSend: function () {
+	//					    	console.log(username)
+	//					    },
+						    success: function(res) {
+						        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'getStations',{
+						        	stations: res.data
+						        })
+						    },
+						    error: function(res, type, errorThrown) {
+						    	if(isLogined) mui.toast("获取站点信息失败，请下拉刷新");
+						        console.log(JSON.stringify(res));
+						    }
+						});
+					}
+					
 					mui.ajax({
 		            	url: 'https://www.itcrasher.club/wxclient/wx/listaspit',
-					    data: {staID:1},
+					    data: {staID: staID},
 					    dataType: 'json',
 					    type: 'get',
 					    timeout: 10000,
@@ -95,6 +120,9 @@
 					        mui.fire(plus.webview.getWebviewById('professionalAnalysis.html'),'formatData',{
 					        	status: true
 					        });
+					        if (event.detail.getStationsData) {
+					        	plus.nativeUI.showWaiting();
+					        }
 					    },
 					    success: function(res) {
 					    	if(isLogined) mui.toast("获取数据成功");
@@ -106,7 +134,8 @@
 					        mui.fire(plus.webview.getWebviewById('singleStationAnalysis.html'),'formatData',{
 					        	status: false,
 					        	result: res.message,
-					        	data: res.data[res.data.length-1]
+					        	data: res.data[0],
+					        	staID: staID
 					        });
 					        console.log("ee"+res.data.length);
 					    },
@@ -123,6 +152,9 @@
 					        	data: {}
 					        });
 					        console.log(JSON.stringify(res));
+					    },
+					    complete: function() {
+					        if (event.detail.getStationsData) plus.nativeUI.closeWaiting();
 					    }
 					});
 				});

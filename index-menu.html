@@ -92,7 +92,8 @@
 					if(page_title === 'pro_page'){
 						if(isLogined){
 							mui.fire(pages[page_title],'islogin',{
-							    islogin: true
+							    islogin: true,
+							    username: username
 							});
 							pages[page_title].show();
 							mui.fire(index,'changeTitle',{

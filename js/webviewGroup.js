@@ -113,7 +113,7 @@ proto._initDrag = function(webview, dir) {
 		}
 		webview.drag({
 				'direction': dir,
-				'moveMode': 'followFinger'
+//				'moveMode': 'followFinger'
 			}, {
 				'view': view,
 				'moveMode': 'follow'

@@ -10,11 +10,46 @@
 
 	<body>
 		<div class="mui-content">
-		    gis
+			<div id="map" style="position: absolute;top: 0; bottom: 0; left: 0; right: 0; background: #eee;"></div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/kcenter1.0.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init()
+			mui.plusReady(function() {
+				var map = M.mapInit.mapInitGaode("map", {
+					center: [32.03118865069183, 118.7723693868611],
+					zoom: 6,
+					zoomControl: false
+				});
+	            var mask=mui.createMask();//遮罩层
+				mui.ajax({
+					url: 'https://www.itcrasher.club/wxclient/wx/userstations',
+					data: {
+						uid: 'test'
+					},
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					beforeSend: function() {
+						mask.show();
+						plus.nativeUI.showWaiting();
+					},
+					success: function(res) {
+						console.log('数据'+JSON.stringify(res));
+						M.layerManage.loadUserStations(map, res.data, function(stationObj) {
+							console.log("点击图标回调函数:" + JSON.stringify(stationObj));
+						});
+					},
+					error: function(res, type, errorThrown) {
+						mui.toast("数据获取失败");
+					},
+				    complete: function() {
+				        mask.close();
+				        plus.nativeUI.closeWaiting();
+				    }
+				});
+			});
 		</script>
 	</body>
 

@@ -13,15 +13,6 @@
 			.boxes{
 				margin: 20px;
 			}
-			.place{
-				font-size: 3em;
-				line-height: 100px;
-				padding: 5px;
-				color: #fff;
-			}
-			.pollution{
-				font-size: 4em;
-			}
 			.emphasize{
 				font-size: 1.2em;
 			}
@@ -38,15 +29,15 @@
 			.card{
 				display: inline-block;
 				background-color: #ddd;
-				margin: 10px 5px;
-				width: 70px;
-				height: 70px;
+				margin: 8px 4px;
+				width: 60px;
+				height: 60px;
 			}
 			.card-head {
 				height: 0;
-				line-height: 30px;
+				line-height: 25px;
 				text-align: center;
-				padding-bottom: 30px;
+				padding-bottom: 25px;
 			}
 			.safe{
 				background-color: green;
@@ -58,34 +49,44 @@
 				background-color: red;
 			}
 			.card-content{
-				font-size: 1.2em;
+				font-size: 1.1em;
 				height: 0;
-				line-height: 40px;
+				line-height: 35px;
 				text-align: center;
-				padding-bottom: 40px;
+				padding-bottom: 35px;
 				color: #555;
 			}
 			.describe {
 				font-size: 1.3em;
 				color: white;
+				line-height: 1.2em;
 			}
 		</style>
 	</head>
 
 	<body>
 		<div class="mui-content mui-fullscreen">
+			<div class="boxes">
+				<span id="dataTime">时间：N/A</span>
+			</div>
 		    <div class="boxes">
 		    	<span class="place">南京</span>
-		    	[<a>修改</a>]
+		    	<!--[<a>修改</a>]-->
 		    </div>
 		    <div class="boxes">
-		    	<span class="pollution">N/A</span>
-		    	<span style="font-size: 1.5em;">ASPI</span>
-		    	<span class="nomel-text">排行</span>
+		    	ASPI：<span class="pollution">N/A</span>
+		    	<!--<span class="nomel-text">排行</span>
 		    	<span class="emphasize">N/A</span>
 		    	<span class="nomel-text">位，击败了</span>
 		    	<span class="emphasize">N/A</span>
-		    	<span class="nomel-text">%的城市</span>
+		    	<span class="nomel-text">%的城市</span>-->
+		    </div>
+		    <div class="boxes">
+		    	站点编码：<span id="coding"></span>
+		    </div>
+		    <div class="boxes">
+		    	平衡排放强度：<span class="ee"> N/A </span>kg/km2·h
+		    	
 		    </div>
 		    <div style="height: 3px;border-bottom: 2px dotted #eee; margin: -15px 20px 0 20px;"></div>
 		    <div class="boxes" style="margin-top: 10px;">
@@ -94,7 +95,7 @@
 					首要污染物：<span class="firstPollution">PM10</span>
 				</div>
 				<div>
-					<span style="font-size: 0.7em;" class="currentTime">2018年6月25日</span>
+					<span style="font-size: 0.7em;" class="currentTime">N/A</span>
 				</div>
 		    </div>
 		    <div class="boxes">
@@ -108,12 +109,31 @@
 		    	</div>
 		    </div>
 		    <div class="boxes">
-		    	<p class="describe"></p>
+		    	<p class="describe">为保障空气质量不恶化，请将实际排放强度控制在平衡排放强度以下，建议结合单点动态污染源排放清单制定减排措施</p>
 		    </div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
-			mui.init();
+			var staID = 1
+			mui.init({
+			  pullRefresh : {
+			    container:".mui-content",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+			    down : {
+			      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+			      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+			      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+			      range:'150px', //可选 默认100px,控件可下拉拖拽的范围
+			      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
+			      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+			      callback: function(){
+			      	mui.fire(plus.webview.getWebviewById('pro_page'),'getProData',{
+			      		staID: staID,
+						getStationsData: false
+			      	});
+			      }
+			    }
+			  }
+			});
 			function changeTag(who, status){
 				var head = who == 'pm25' ? mui('.pm25-head')[0].classList : mui('.pm10-head')[0].classList;
 				if(status < 70){
@@ -130,47 +150,58 @@
 					head.add('danger');
 				}
 			}
+			function pollutionTagChange(status){
+				var tag = mui('.pollution-tag')[0];
+				var head = tag.classList;
+				if(status < 70){
+					head.remove('warning');
+					head.remove('danger');
+					head.add('safe');
+					tag.innerHTML = "轻度污染";
+				}else if(status < 100){
+					head.add('warning');
+					head.remove('danger');
+					head.remove('safe');
+					tag.innerHTML = "中度污染";
+				}else{
+					head.remove('warning');
+					head.remove('safe');
+					head.add('danger');
+					tag.innerHTML = "重度污染";
+				}
+			}
 			window.addEventListener('formatData',function(event){
+				staID = event.detail.staID
 				if(event.detail.result){
 					var d = event.detail.data;
+					console.log('singleStationData=' + JSON.stringify(d))
+					if(d === undefined) {
+						return
+					}
+					mui('#dataTime')[0].innerHTML = d.hourTime + ':00';
+					mui('#coding')[0].innerHTML = d.awsUUID;
 					if(d.pm25 > d.pm10){
 						mui('.firstPollution')[0].innerHTML = "PM2.5";
+						pollutionTagChange(d.pm25);
 					}else{
 						mui('.firstPollution')[0].innerHTML = "PM10";
+						pollutionTagChange(d.pm10);
 					}
-//					mui('.place')[0].innerHTML = '';
+					mui('.place')[0].innerHTML = d.awsName;
 					mui('.pm25')[0].innerHTML = d.pm25;
 					mui('.pm10')[0].innerHTML = d.pm10;
 					
 					changeTag('pm25', d.pm25);
 					changeTag('pm10', d.pm10);
-					var date = new Date();
-					mui('.currentTime')[0].innerHTML = d.hourTime || date.getFullYear() + "年" + ( date.getMonth() + 1 ) + "月" + date.getDate();;
-					mui('.pollution')[0].innerHTML = d.aspi + '';
-					mui('.describe')[0].innerHTML = d.recommendTxt;
-				}else{
 					
+					var date = new Date();
+					mui('.currentTime')[0].innerHTML = d.hourTime+":00" || date.getFullYear() + "年" + ( date.getMonth() + 1 ) + "月" + date.getDate();
+					mui('.pollution')[0].innerHTML = d.aspi + '';
+//					mui('.describe')[0].innerHTML = d.recommendTxt;
+					mui('.ee')[0].innerHTML = d.ee;
 				}
 				mui('.mui-content').pullRefresh().endPulldown();
 			});
-			
-			mui.init({
-			  pullRefresh : {
-			    container:".mui-content",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
-			    down : {
-			      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-			      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-			      height:'50px',//可选,默认50px.下拉刷新控件的高度,
-			      range:'150px', //可选 默认100px,控件可下拉拖拽的范围
-			      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
-			      auto: true,//可选,默认false.首次加载自动上拉刷新一次
-			      callback: function(){
-			      	mui.fire(plus.webview.getWebviewById('pro_page'),'getProData',{});
-			      }
-			    }
-			  }
-			});
 		</script>
 	</body>
-
 </html>

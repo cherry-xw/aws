@@ -9,8 +9,8 @@
 		<style type="text/css">
 			.login-page {
 				position: absolute;
-				background: #fff url(../../imgs/back.jpg) no-repeat fixed bottom;
-				/*background-size: 100% 100%;*/
+				background: #fff url(../../imgs/back.jpg) no-repeat;
+				background-size: 100% 100%;
 				top: 0;
 				/*height: 500px;*/
 				/*bottom: 0;*/
@@ -32,6 +32,13 @@
 			.mui-btn-danger {
 				width: 100%;
 			}
+			.tab-title {
+				width: 35%;
+			}
+			.tab-content {
+				width: 65%;
+				background-color: rgba(200, 200, 200, 0.6);
+			}
 		</style>
 	</head>
 
@@ -40,10 +47,13 @@
 		    <div class="mui-scroll">
 		    	<div class="logo">ASPI</div>
 			    <div class="user-msg">
-			    	当前登录：<span id="username"></span>
+			    	<span class="tab-title">
+			    		当前登录：
+			    	</span>
+			    	<span class="tab-content" id="username"></span>
 			    </div>
 			    <div class="btn-father">
-			    	<button class="mui-btn-danger" id="login">退出登录</button>
+			    	<button class="mui-btn-danger" id="logout">退出登录</button>
 			    </div>
 		    </div>
 		</div>
@@ -58,7 +68,7 @@
             
 	            var mask=mui.createMask();//遮罩层
 	            var toast_login;
-				mui('.btn-father').on('tap','#login',function(){
+				document.getElementById('logout').addEventListener('tap',function(){
 					mui.toast("退出登录成功");
 					mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
 			        	islogin: false

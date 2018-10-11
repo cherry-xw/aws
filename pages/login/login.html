@@ -9,8 +9,8 @@
 		<style type="text/css">
 			.login-page {
 				position: absolute;
-				background: #fff url(../../imgs/back.jpg) no-repeat fixed bottom;
-				/*background-size: 100% 100%;*/
+				background: #fff url(../../imgs/back.jpg) no-repeat;
+				background-size: 100% 100%;
 				top: 0;
 				/*height: 500px;*/
 				/*bottom: 0;*/
@@ -135,13 +135,15 @@
 			}
 			function getLocalUser(){
 				var user = JSON.parse(localStorage.getItem('user'));
-            	mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
-		        	islogin: user.islogin,
-				    username: user.username
-		        });
-				isCanLogin = true;
-		        mui('#username')[0].value = user.username;
-		        mui('#userpwd')[0].value = user.passwd;
+				if(user){
+	            	mui.fire(plus.webview.getWebviewById('index-menu'),'gologin',{
+			        	islogin: user.islogin,
+					    username: user.username
+			        });
+					isCanLogin = true;
+			        mui('#username')[0].value = user.username;
+			        mui('#userpwd')[0].value = user.passwd;
+				}
 				return user;
 			}
 			mui('.mui-scroll-wrapper').scroll({
@@ -158,7 +160,7 @@
             	
 	            var mask=mui.createMask();//遮罩层
 	            var toast_login;
-				mui('.btn-father').on('tap','#login',function(){
+				document.getElementById('login').addEventListener('tap',function(){
 					var name = mui('#username')[0].value;
 					var pwd = mui('#userpwd')[0].value
 					if(!name || !pwd){

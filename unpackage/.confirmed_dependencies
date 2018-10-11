@@ -1,81 +1,33 @@
 {
-<<<<<<< HEAD
-	"index.html": {
-		"resources": [
-			"pages/main.html",
-			"pages/basic/main.html",
-			"css/base.css",
-			"js/update.js"
-		],
-		"refer": [
-			"pages/main.html",
-			"pages/basic/main.html",
-			"menu.html",
-<<<<<<< HEAD
-			"index-menu.html"
-=======
-			"index-menu.html",
-			"pages/login/login.html",
-			"pages/pro/pro.html"
->>>>>>> page-main
-		]
-	},
-	"menu.html": {
-		"refer": [
-			"pages/basic/main.html"
-		],
-		"resources": []
-	},
-	"pages/basic/main.html": {
-		"refer": [
-			"menu.html"
-		],
-		"resources": []
-	},
-	"index-menu.html": {
-		"refer": [
-			"pages/basic/main.html"
-		]
-	}
-=======
   "index.html": {
     "resources": [
-      "pages/main.html",
-      "pages/basic/main.html",
-      "css/base.css",
-      "js/update.js",
       "pages/pro/pro.html"
     ],
     "refer": [
-      "pages/main.html",
-      "pages/basic/main.html",
-      "menu.html",
-      "index-menu.html",
       "pages/login/login.html",
-      "pages/pro/pro.html"
+      "pages/login/logined.html",
+      "index-menu.html",
+      "pages/pro/pro.html",
+      "pages/basic/main.html"
     ]
   },
-  "menu.html": {
-    "refer": [
-      "pages/basic/main.html"
+  "pages/pro/pro.html": {
+    "resources": [
+      "pages/pro/professionalAnalysis.html"
     ],
-    "resources": []
+    "refer": [
+      "pages/pro/professionalAnalysis.html",
+      "pages/pro/singleStationAnalysis.html"
+    ]
   },
   "pages/basic/main.html": {
+    "resources": [
+      "pages/basic/globalScattergram.html"
+    ],
     "refer": [
-      "menu.html",
       "pages/basic/globalScattergram.html",
       "pages/basic/abstract.html",
-      "pages/basic/GISScattergram.html",
-      "index.html"
-    ],
-    "resources": []
-  },
-  "index-menu.html": {
-    "refer": [
-      "pages/basic/main.html"
-    ],
-    "resources": []
+      "pages/basic/GISScattergram.html"
+    ]
   }
->>>>>>> page-main
 }

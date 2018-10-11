@@ -7,11 +7,14 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
+			.mui-content {
+				padding-bottom: 90px;
+			}
 			.title{
 				text-align: center;
 				margin: 20px;
 			}
-			.title+.content{
+			.content{
 				line-height: 1.8em;
 				font-size: 16px;
 				margin: 20px;
@@ -22,7 +25,21 @@
 	<body>
 		<div class="mui-content">
 		    <h2 class="title">简介</h2>
-		    <p class="content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;南信指数（Nuist index）-空气自然净化能力指数（Air Self-Purification index，ASPI）是由南京信息工程大学气候变化与公共政策研究院蔡银寅博士根据经济学原理和方法、融合气象观测数据和WRF-chem模式，与南京信息工程大学气象台周北平工程师合作研发的一套反映边界层大气自然净化污染物能力的指数模型，简称ASPI-Model。 ASPI是Nuist index的核心，也是Nuist index的基础。目前，ASPI每隔3小时更新一次，基本覆盖了中国所有县级以上城市。空气污染的内因是排放，外因是气象。ASPI适时反映某一区域边界层大气自然净化污染物的能力，实现了对空气污染外因的数值化。</p>
+		    <p class="content">
+		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大气自然净化能力指数（Air Self-Purification index，ASPI）是一套反映近地面大气活动对污染物净化能力影响的实时数值模型，简称ASPI Model。ASPI用0-100之间的实数表示，数值越大意味着大气净化污染物的能力越强。
+		    </p>
+			<p class="content">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对应任一个ASPI，都有一个平衡排放强度（Equilibrium Emission，EE）。EE的含义是：在一个给定的ASPI条件下，该排放强度排出的污染物正好被大气完全净化，空气质量既不恶化，也不好转。
+			</p>
+			<p class="content">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大气自然净化能力实时监测设备，每一时刻，都会实时输出一组ASPI和EE。如果实际排放强度高于EE，则空气质量会恶化，低于EE，则空气质量会好转。
+			</p>
+			<p class="content">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;根据ASPI可以在一定程度上指导环保工作，但是由于不同地方的实际排放强度也是随机波动的，只根据APSI预测空气质量的走势具有一定的局限性。因此，在实际使用中，建议结合动态污染源清单模型，将实际排放强度控制在EE以下，确保空气质量不恶化。
+			</p>
+			<p class="content">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;若在给定范围内设立的大气自然净化能力实时监测设备达到一定数量，则可以提供ASPI预报服务，在此基础上结合动态污染源清单模型可以实现对污染排放的提前管控。
+			</p>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
