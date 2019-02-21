@@ -71,6 +71,11 @@
                             c.classList.remove("mui-active");
                         }
                         document.querySelector(".tab-head .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")").classList.add("mui-active");
+                        console.log(JSON.stringify(obj)+ ' ==eee')
+                        if (obj.index == 1) {
+                        	console.log(12345678)
+                        	mui.fire(plus.webview.getWebviewById('GISScattergram.html'),'getMapData',{})
+                        }
                     }
                 });
 				mui(".tab-head").on("tap", ".mui-control-item", function(e) {

@@ -15,16 +15,10 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../libs/kcenter1.0.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			mui.init()
-			mui.plusReady(function() {
-				var map = M.mapInit.mapInitGaode("map", {
-					center: [32.03118865069183, 118.7723693868611],
-					zoom: 6,
-					zoomControl: false
-				});
-	            var mask=mui.createMask();//遮罩层
+			var add = (i) => i < 10 ? '0' + i : i
+			function getMapData(mask, url, callback) {
 				mui.ajax({
-					url: 'https://www.itcrasher.club/wxclient/wx/userstations',
+					url: url,
 					data: {
 						uid: 'test'
 					},
@@ -36,19 +30,90 @@
 						plus.nativeUI.showWaiting();
 					},
 					success: function(res) {
-						console.log('数据'+JSON.stringify(res));
-						M.layerManage.loadUserStations(map, res.data, function(stationObj) {
-							console.log("点击图标回调函数:" + JSON.stringify(stationObj));
-						});
+						callback(res)
 					},
 					error: function(res, type, errorThrown) {
 						mui.toast("数据获取失败");
 					},
-				    complete: function() {
-				        mask.close();
-				        plus.nativeUI.closeWaiting();
-				    }
+					complete: function() {
+						mask.close();
+						plus.nativeUI.closeWaiting();
+					}
 				});
+			}
+			mui.init()
+			mui.plusReady(function() {
+				var map = M.mapInit.mapInitGaode("map", {
+					center: [32.03118865069183, 118.7723693868611],
+					zoom: 6,
+					zoomControl: false
+				});
+				var mask = mui.createMask(); //遮罩层
+				function addPoint2Map() {
+					var currentDate = new Date()
+					var year = currentDate.getFullYear()
+					var month = currentDate.getMonth() + 1
+					var day = currentDate.getDate()
+					var hour = currentDate.getHours() - 1
+					var dateString = year + '-' + add(month) + '-' + add(day) + ' ' + add(hour)
+					console.log(dateString)
+					getMapData(mask, 'https://www.itcrasher.club/wxclient/wx/userstations', function(res1) {
+						getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=10007&rtime='+dateString, function(res2) {
+							getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=10008&rtime='+dateString, function(res3) {
+								console.log('数据1=' + JSON.stringify(res1.data));
+								console.log('数据2=' + JSON.stringify(res2));
+								console.log('数据3=' + JSON.stringify(res3));
+	//							{
+	//								"staID": 1,
+	//								"lon": 118.772,
+	//								"lat": 32.0312,
+	//								"awsName": "信息工程大学",
+	//								"awsUUID": "5320111012",
+	//								"name": "test",
+	//								"hourTime": "2019-02-12 21时",
+	//								"aspi": 28.73,
+	//								"ee": 45.98,
+	//								"uid": "test"
+	//							}
+								var data = res1.data
+								data.pop()
+								if (res2.data.length) {
+									data.push({
+										"staID": 3,
+										"lon": 116.5626,
+										"lat": 36.3947,
+										"awsName": "济南森林公园",
+										"awsUUID": "6370104031",
+										"hourTime": dateString + "时",
+										"name": "test",
+										"uid": "test",
+										"aspi": res2.data[0].aspi,
+										"ee": res2.data[0].ee
+									})
+								}
+								if (res3.data.length) {
+									data.push({
+										"staID": 4,
+										"lon": 116.9611,
+										"lat": 36.6542,
+										"awsName": "济南中车机车厂",
+										"awsUUID": "6370104021",
+										"hourTime": dateString + "时",
+										"name": "test",
+										"uid": "test",
+										"aspi": res3.data[0].aspi,
+										"ee": res3.data[0].ee
+									})
+								}
+								M.layerManage.loadUserStations(map, data, function(stationObj) {
+									console.log("点击图标回调函数:" + JSON.stringify(stationObj));
+								});
+							})
+						})
+					})
+				}
+				addPoint2Map()
+				window.addEventListener('getMapData', addPoint2Map);
 			});
 		</script>
 	</body>
