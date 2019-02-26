@@ -58,8 +58,8 @@
 					var dateString = year + '-' + add(month) + '-' + add(day) + ' ' + add(hour)
 					console.log(dateString)
 					getMapData(mask, 'https://www.itcrasher.club/wxclient/wx/userstations', function(res1) {
-						getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=10007&rtime='+dateString, function(res2) {
-							getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=10008&rtime='+dateString, function(res3) {
+						getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=105&rtime='+dateString, function(res2) {
+							getMapData(mask, 'http://47.93.192.25:8088/aspiapp/queryrecords/?station=106&rtime='+dateString, function(res3) {
 								console.log('数据1=' + JSON.stringify(res1.data));
 								console.log('数据2=' + JSON.stringify(res2));
 								console.log('数据3=' + JSON.stringify(res3));
